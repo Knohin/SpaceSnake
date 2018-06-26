@@ -1,9 +1,9 @@
 # ============== #
 # User generated #
 # ============== #
+
 Bin/
 HTML/
-
 
 # =============== #
 # Unity generated #
@@ -20,6 +20,7 @@ Library/
 # ===================================== #
 
 ExportedObj/
+.vs/
 *.svd
 *.userprefs
 *.csproj

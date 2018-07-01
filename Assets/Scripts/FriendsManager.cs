@@ -7,7 +7,8 @@ public class FriendsManager : MonoBehaviour {
     [HideInInspector] public List<GameObject> MovingFriends;
     [HideInInspector] public List<GameObject> FloatingFriends;
     public LinkedList<Vector2> changeDirectionPoint; // 메모리 파편화 가능성? 나중에 자료구조를 직접 만들든가 해야
-    
+
+    public float DistanceBetweenFriends;
 
     private void Awake()
     {
@@ -49,14 +50,14 @@ public class FriendsManager : MonoBehaviour {
         // Move Friends
         for (int i = MovingFriends.Count - 1; i >= 0; i--)
         {
-            MovingFriends[i].GetComponent<FriendMover>().Move();
+            MovingFriends[i].GetComponent<FriendMover>().MoveCircular();
         }
 
         //////////////////////
         //Remove all passed changeDirectionPoint for memory
         var dest = MovingFriends[0].GetComponent<FriendMover>().destination;
         while (dest != changeDirectionPoint.First)
-                changeDirectionPoint.RemoveFirst();
+            changeDirectionPoint.RemoveFirst();
     }
 
     public void AddFriend(GameObject newFriend)
@@ -65,9 +66,24 @@ public class FriendsManager : MonoBehaviour {
 
         // MovingFriends에 넣고
         FriendMover head = MovingFriends[MovingFriends.Count - 1].GetComponent<FriendMover>();
-        newFriend.transform.position = head.transform.position + head.dirVector * 0.45f;
+
+        //newFriend.transform.position = head.transform.position + Vector3.up * 0.45f;
+        float thetaAhead = DistanceBetweenFriends / head.Radius;
+        if(head.IsClockwise)
+        {
+            thetaAhead *= -1.0f;
+        }
+
+        Vector2 centerToCurrent = (Vector2)head.transform.position - head.CircleCenter;
+        Vector2 centerToTarget = new Vector2(
+            Mathf.Cos(thetaAhead) * centerToCurrent.x - Mathf.Sin(thetaAhead) * centerToCurrent.y,
+            Mathf.Sin(thetaAhead) * centerToCurrent.x + Mathf.Cos(thetaAhead) * centerToCurrent.y
+        );
+        newFriend.transform.position = head.CircleCenter + centerToTarget;
         newFriend.GetComponent<FriendMover>().isMoving = true;
         newFriend.GetComponent<FriendMover>().Direction = head.Direction;
+        newFriend.GetComponent<FriendMover>().CircleCenter = head.CircleCenter;
+        newFriend.GetComponent<FriendMover>().IsClockwise = head.IsClockwise;
         MovingFriends.Add(newFriend);
     }
 }

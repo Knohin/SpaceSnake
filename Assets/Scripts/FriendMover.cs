@@ -7,9 +7,15 @@ public class FriendMover : MonoBehaviour
 
     public float Speed;
 
-    bool isClockWise = false;
     [HideInInspector] public LinkedListNode<Vector2> destination = null;
     [HideInInspector] public bool isMoving = false;
+
+    private bool isClockwise = true;
+    public bool IsClockwise { get { return isClockwise; } set { isClockwise = value; } }
+    private const float radius = 0.5f;
+    public float Radius { get { return radius; } }
+    public Vector2 circleCenter;
+    public Vector2 CircleCenter { get { return circleCenter; } set { circleCenter = value; } }
 
     public Vector3 dirVector;
     private int direction; // 0,1,2,3 각각 상,우,하,좌
@@ -35,20 +41,26 @@ public class FriendMover : MonoBehaviour
     private void OnEnable()
     {
         Direction = 0;
+        ///////
+
+        circleCenter = (Vector2)transform.position + Vector2.right * radius;
     }
 
     private void OnDisable()
     {
         destination = null;
     }
-    
+
     public void ChangeDirection()
     {
-        // isClockWise = !isClockWise;
         Direction++;
+        /////////
+        isClockwise = !isClockwise;
+        // 
+        circleCenter += 2.0f * ((Vector2)transform.position - circleCenter);
     }
 
-    public void Move()
+    public void MoveStraight()
     {
         float movement = Speed * Time.deltaTime; // 한 프레임동안 이동할 거리
 
@@ -74,8 +86,41 @@ public class FriendMover : MonoBehaviour
         }
     }
 
-    public void MoveCircular(/**/)
+    public void MoveCircular()
     {
-        //
+        float thetaToMove = Speed / radius * Time.deltaTime; // 한 프레임동안 이동할 거리
+
+        float thetaToDest;
+        while (destination != null)
+        {
+            Vector2 centerToPos = (Vector2)transform.position - circleCenter;
+            Vector2 centerToDest = destination.Value - circleCenter;
+            thetaToDest = (isClockwise) ? Vector2.Angle(centerToPos, centerToDest) : Vector2.Angle(centerToDest, centerToPos);
+            thetaToDest *= Mathf.PI / 180.0f;
+            if ( thetaToDest < 0 )
+            {
+                thetaToDest += 2.0f * Mathf.PI;
+            }
+            
+            if (thetaToMove < thetaToDest)
+            {
+                break;
+            }
+            TextLog.Print("theta between : " + thetaToDest);
+            transform.position = destination.Value;
+            ChangeDirection();
+            thetaToMove -= thetaToDest;
+
+            destination = destination.Next;
+        }
+        if (isClockwise)
+            thetaToMove *= -1.0f;
+        Vector2 centerToCurrent = (Vector2)transform.position - circleCenter;
+        Vector2 centerToTarget = new Vector2(
+            Mathf.Cos(thetaToMove) * centerToCurrent.x - Mathf.Sin(thetaToMove) * centerToCurrent.y,
+            Mathf.Sin(thetaToMove) * centerToCurrent.x + Mathf.Cos(thetaToMove) * centerToCurrent.y
+        );
+        transform.position = circleCenter + centerToTarget;
+        return;
     }
 }

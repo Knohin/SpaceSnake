@@ -159,6 +159,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 2
   isMoving: 0
+  circleCenter: {x: 0, y: 0}
   dirVector: {x: 0, y: 0, z: 0}
 --- !u!50 &38231236
 Rigidbody2D:
@@ -406,6 +407,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 2
   isMoving: 0
+  circleCenter: {x: 0, y: 0}
   dirVector: {x: 0, y: 0, z: 0}
 --- !u!58 &382423665
 CircleCollider2D:
@@ -481,7 +483,7 @@ Transform:
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &382423668
 Rigidbody2D:
@@ -560,6 +562,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 2
   isMoving: 0
+  circleCenter: {x: 0, y: 0}
   dirVector: {x: 0, y: 0, z: 0}
 --- !u!50 &423050435
 Rigidbody2D:
@@ -916,6 +919,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 2
   isMoving: 0
+  circleCenter: {x: 0, y: 0}
   dirVector: {x: 0, y: 0, z: 0}
 --- !u!50 &874133638
 Rigidbody2D:
@@ -1434,7 +1438,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1920505862}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1446,7 +1450,7 @@ Transform:
   - {fileID: 2022047697}
   - {fileID: 1313145871}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1938203094
 Prefab:
@@ -1490,24 +1494,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 635de06901bf0be45a2125ad9eb7e5b9, type: 2}
   m_IsPrefabParent: 0
---- !u!1 &1938203095 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1589735685305016, guid: 635de06901bf0be45a2125ad9eb7e5b9,
-    type: 2}
-  m_PrefabInternal: {fileID: 1938203094}
---- !u!114 &1938203096
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1938203095}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00defe89861257041a79fd4443c17cd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MovingFriends: []
-  FloatingFriends: []
 --- !u!1 &2020168806
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FriendsManager : MonoBehaviour {
 
-    [HideInInspector] public List<GameObject> MovingFriends; // 꼬리 -> 머리 순서
+     public List<GameObject> MovingFriends; // 꼬리 -> 머리 순서
     [HideInInspector] public List<GameObject> FloatingFriends;
     public LinkedList<Vector2> changeDirectionPoint; // 메모리 파편화 가능성? 나중에 자료구조를 직접 만들든가 해야
 
@@ -21,13 +21,15 @@ public class FriendsManager : MonoBehaviour {
         f.GetComponent<FriendMover>().isMoving = true;
         f.GetComponent<FriendMover>().Speed = MovingSpeedAtStart;
         MovingFriends.Add(f);
+
+        InvokeRepeating("SpawnFriends", 4.5f, 5);
     }
 
     private void Update()
     {
         //////////////////
         // Get input
-        if (Input.GetMouseButtonDown(0) || (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began) )
+        if (Input.GetMouseButtonDown(0) || (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began))
         {
             TextLog.Print("------------------Touch");
             // Change direction of a Head of Friends
@@ -47,7 +49,7 @@ public class FriendsManager : MonoBehaviour {
                 MovingFriends[i].GetComponent<FriendMover>().destination = changeDirectionPoint.Last;
             }
         }
-        
+
         ////////////////////
         // Move Friends
         for (int i = MovingFriends.Count - 1; i >= 0; i--)
@@ -60,6 +62,7 @@ public class FriendsManager : MonoBehaviour {
         var dest = MovingFriends[0].GetComponent<FriendMover>().destination;
         while (dest != changeDirectionPoint.First)
             changeDirectionPoint.RemoveFirst();
+
     }
 
     public void AddFriend(GameObject newFriend)
@@ -88,5 +91,23 @@ public class FriendsManager : MonoBehaviour {
         newFriend.GetComponent<FriendMover>().CircleCenter = head.CircleCenter;
         newFriend.GetComponent<FriendMover>().IsClockwise = head.IsClockwise;
         MovingFriends.Add(newFriend);
+    }
+
+    public void DeleteFriend(GameObject oldFriend)
+    {
+        // TODO: moving에서 제거
+        Destroy(oldFriend);
+        oldFriend = null;
+    }
+
+    public GameObject[] Friends;
+
+    void SpawnFriends()
+    {
+        float x = Random.Range(-5.5f, 5.5f);
+        float y = Random.Range(-9.5f, 9.5f);
+
+        int cha = Random.Range(0, 8); //0~7
+        FloatingFriends.Add(Instantiate(Friends[cha], new Vector3(x, y, 0f), Quaternion.identity));
     }
 }

@@ -6,6 +6,11 @@ TagManager:
   tags:
   - Meteoroid
   - Friend
+  - tail
+  - meteo
+  - Background
+  - item
+  - Blackhole
   layers:
   - Default
   - TransparentFX

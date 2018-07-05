@@ -11,13 +11,13 @@ public class FriendMover : MonoBehaviour
 
     private bool isClockwise = true;
     public bool IsClockwise { get { return isClockwise; } set { isClockwise = value; } }
-    private const float radius = 0.5f;
+    private const float radius = 1.0f;
     public float Radius { get { return radius; } }
     private Vector2 circleCenter;
     public Vector2 CircleCenter { get { return circleCenter; } set { circleCenter = value; } }
 
     private ViewportManager viewport;
-
+    
     // 4방향 직진용 변수들
     //public Vector3 dirVector;
     //private int direction; // 0,1,2,3 각각 상,우,하,좌

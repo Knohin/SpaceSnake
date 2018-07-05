@@ -20,10 +20,12 @@ public class FriendCollider : MonoBehaviour {
             Debug.Log("OnTriggerEnter() in FriendCollider");
             TextLog.Print("OnTriggerEnter() in FriendCollider");
         }
-        else if(collision.tag == "Friend")
+        else if (collision.tag == "Friend")
         {
             if (friendMover.isMoving)
-            { }
+            {
+                //TextLog.Print("디즴");
+            }
             else
             {
                 friendsManager.AddFriend(gameObject);

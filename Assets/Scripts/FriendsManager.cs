@@ -4,23 +4,52 @@ using UnityEngine;
 
 public class FriendsManager : MonoBehaviour {
 
-     public List<GameObject> MovingFriends; // 꼬리 -> 머리 순서
-    [HideInInspector] public List<GameObject> FloatingFriends;
+    [Header("private 인데 일단")]
+    // For pooling
+    public List<GameObject> MovingFriends; // 꼬리 -> 머리 순서
+    public List<GameObject> FloatingFriends;
+    public List<GameObject> InActiveFriends;
     public LinkedList<Vector2> changeDirectionPoint; // 메모리 파편화 가능성? 나중에 자료구조를 직접 만들든가 해야
 
+    [Space(10)]
     public float MovingSpeedAtStart;
     public float DistanceBetweenFriends;
+    [Space(10)]
+    public GameObject[] FriendsPrefab;
 
     private void Awake()
     {
         MovingFriends = new List<GameObject>();
         FloatingFriends = new List<GameObject>();
+        InActiveFriends = new List<GameObject>();
         changeDirectionPoint = new LinkedList<Vector2>();
 
+        Transform friendPoolHolder = GameObject.Find("FriendPoolHolder").transform;
+        if (friendPoolHolder == null)
+            friendPoolHolder = (new GameObject("FriendPoolHolder")).transform;
+
+        // Set start Charater
         GameObject f = GameObject.Find("StartFriend");
-        f.GetComponent<FriendMover>().isMoving = true;
-        f.GetComponent<FriendMover>().Speed = MovingSpeedAtStart;
+        f.transform.parent = friendPoolHolder;
+        FriendMover fm = f.GetComponent<FriendMover>();
+        fm.isMoving = true;
+        fm.Speed = MovingSpeedAtStart;
+        fm.CircleCenter = (Vector2)transform.position + Vector2.right * fm.Radius;
+
         MovingFriends.Add(f);
+
+        // Pre-make objects to pool
+        int NumberOfFriends = FriendsPrefab.Length;
+        for (int i = 100 / NumberOfFriends; 0 < i; i--)
+        {
+            for(int j = NumberOfFriends-1; 0 <= j; j--)
+            {
+                GameObject friend = Instantiate(FriendsPrefab[j]);
+                friend.transform.parent = friendPoolHolder;
+                friend.SetActive(false);
+                InActiveFriends.Add(friend);
+            }
+        }
 
         InvokeRepeating("SpawnFriends", 4.5f, 5);
     }
@@ -65,14 +94,32 @@ public class FriendsManager : MonoBehaviour {
 
     }
 
-    public void AddFriend(GameObject newFriend)
+    void SpawnFriends()
+    {
+        if (InActiveFriends.Count <= 0)
+            return;
+
+        float x = Random.Range(-5.5f, 5.5f);
+        float y = Random.Range(-9.5f, 9.5f);
+
+        int cha = Random.Range(0, InActiveFriends.Count-1);
+        GameObject newFriend = InActiveFriends[cha];
+
+        InActiveFriends.RemoveAt(cha);
+
+        newFriend.SetActive(true);
+        newFriend.transform.position = new Vector3(x, y);
+        FloatingFriends.Add(newFriend);
+    }
+
+    public void AttachFriend(GameObject newFriend)
     {
         // FloatingFriends 에서 찾고, 제거하고
+        FloatingFriends.Remove(newFriend);
 
         // MovingFriends에 넣고
         FriendMover head = MovingFriends[MovingFriends.Count - 1].GetComponent<FriendMover>();
 
-        //newFriend.transform.position = head.transform.position + Vector3.up * 0.45f;
         float thetaAhead = DistanceBetweenFriends / head.Radius;
         if(head.IsClockwise)
         {
@@ -87,27 +134,19 @@ public class FriendsManager : MonoBehaviour {
         newFriend.transform.position = head.CircleCenter + centerToTarget;
         newFriend.GetComponent<FriendMover>().Speed = head.Speed;
         newFriend.GetComponent<FriendMover>().isMoving = true;
-        //newFriend.GetComponent<FriendMover>().Direction = head.Direction;
         newFriend.GetComponent<FriendMover>().CircleCenter = head.CircleCenter;
         newFriend.GetComponent<FriendMover>().IsClockwise = head.IsClockwise;
         MovingFriends.Add(newFriend);
     }
 
-    public void DeleteFriend(GameObject oldFriend)
+    public void DetachFriend(GameObject oldFriend)
     {
-        // TODO: moving에서 제거
-        Destroy(oldFriend);
-        oldFriend = null;
-    }
-
-    public GameObject[] Friends;
-
-    void SpawnFriends()
-    {
-        float x = Random.Range(-5.5f, 5.5f);
-        float y = Random.Range(-9.5f, 9.5f);
-
-        int cha = Random.Range(0, 8); //0~7
-        FloatingFriends.Add(Instantiate(Friends[cha], new Vector3(x, y, 0f), Quaternion.identity));
+        int idx = MovingFriends.IndexOf(oldFriend);
+        for(int i=idx; 0 <= i; --i)
+        {
+            MovingFriends[i].SetActive(false);
+            InActiveFriends.Add(MovingFriends[i]);
+        }
+        MovingFriends.RemoveRange(0, idx + 1);
     }
 }

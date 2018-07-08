@@ -22,13 +22,14 @@ public class FriendCollider : MonoBehaviour {
         }
         else if (collision.tag == "Friend")
         {
+            TextLog.Print("OnTriggerEnter() in FriendCollider with tag");
             if (friendMover.isMoving)
             {
                 //TextLog.Print("디즴");
             }
             else
             {
-                friendsManager.AddFriend(gameObject);
+                friendsManager.AttachFriend(gameObject);
             }
         }
     }

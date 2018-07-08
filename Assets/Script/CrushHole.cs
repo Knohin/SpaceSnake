@@ -54,13 +54,12 @@ public class CrushHole : MonoBehaviour {
     {
         while (newMeteo.active_Hole)
         {
-            TextLog.Print("빨아2");
             go.transform.position = Vector3.MoveTowards(go.transform.position,
             CrushHole.hole_Pos, Time.deltaTime * 2.0f);
 
             if (go.transform.position.Equals(CrushHole.hole_Pos))
             {
-                fm.DeleteFriend(go);
+                fm.DetachFriend(go);
                 fm.FloatingFriends.Remove(go);
                 break;
             }

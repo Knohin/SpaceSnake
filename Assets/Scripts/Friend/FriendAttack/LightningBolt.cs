@@ -84,7 +84,7 @@ class LightningBolt : MonoBehaviour
         {
             //Generate random positions between 0 and 1 to break up the bolt
             //positions.Add (Random.Range(0f, 1f));
-            positions.Add(Random.Range(.25f, .75f));
+            positions.Add(Random.Range(.2f, .8f));
         }
 
         positions.Sort();

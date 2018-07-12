@@ -28,7 +28,6 @@ public class newItem : MonoBehaviour
         else if (cha == 2 || cha == 3 || cha == 4)
         {
             itemList.Add(new MainObject(Instantiate(bullet, new Vector3(x, y, 0f), Quaternion.identity), new Vector2(-1, -1), new Vector3(x, y, 0f), 0.02f));
-
         }
         else
         {
@@ -63,20 +62,17 @@ public class newItem : MonoBehaviour
             {
                 itemList[i].moveValue.x *= -1;
                 itemList[i].ballPos.x += maxPos.x - itemList[i].ballPos.x;
-
             }
 
             if (itemList[i].ballPos.y < minPos.y)
             {
                 itemList[i].moveValue.y *= -1;
                 itemList[i].ballPos.y += minPos.y - itemList[i].ballPos.y;
-
             }
             else if (itemList[i].ballPos.y > maxPos.y)
             {
                 itemList[i].moveValue.y *= -1;
                 itemList[i].ballPos.y += maxPos.y - itemList[i].ballPos.y;
-
             }
 
             //itemList[i].stone.transform.Rotate(0, 0, 5.0f);

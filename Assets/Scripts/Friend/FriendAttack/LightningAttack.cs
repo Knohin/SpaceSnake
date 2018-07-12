@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CircleCollider2D))]
 public class LightningAttack : MonoBehaviour {
 
     // Prefabs to be assigned in Editor
@@ -18,23 +17,24 @@ public class LightningAttack : MonoBehaviour {
     int maxBolts = 20;
 
     // For finding the nearest meteo
-    List<GameObject> nearbyMeteors;
+    newMeteo meteoManager;
 
-    void Start ()
+    FriendMover friendMover;
+
+    void Awake ()
     {
         activeBoltsObj = new List<GameObject>();
         inactiveBoltsObj = new List<GameObject>();
-        nearbyMeteors = new List<GameObject>();
+        
+        meteoManager = GameObject.Find("GameManager").GetComponent<newMeteo>();
 
-        Transform lightningPoolHolder = transform.Find("LightningPoolHolder");
-
-        GetComponent<CircleCollider2D>().radius = AttackRange;
+        friendMover = transform.GetComponentInParent<FriendMover>();
 
         for (int i = 0; i < maxBolts; i++)
         {
             GameObject bolt = (GameObject)Instantiate(BoltPrefab);
             
-            bolt.transform.parent = lightningPoolHolder;
+            bolt.transform.parent = transform;
 
             // Initialize our lightning with a preset number of max segments
             bolt.GetComponent<LightningBolt>().Initialize(10);
@@ -43,11 +43,13 @@ public class LightningAttack : MonoBehaviour {
             // Store in our inactive list
             inactiveBoltsObj.Add(bolt);
         }
-
+    }
+    private void Start()
+    {
         StartCoroutine("AttackNearestWithBolt");
     }
-	
-	void Update ()
+
+    void Update ()
     {
         GameObject boltObj;
         LightningBolt boltComponent;
@@ -78,20 +80,39 @@ public class LightningAttack : MonoBehaviour {
         }
         
 	}
+    private void OnDisable()
+    {
+        GameObject boltObj;
+        // Deactivate all Ligthning Bolts
+        for (int i = activeBoltsObj.Count - 1; i >= 0; i--)
+        {
+            boltObj = activeBoltsObj[i];
+            boltObj.GetComponent<LightningBolt>().DeactivateSegments();
+
+            boltObj.SetActive(false);
+            activeBoltsObj.RemoveAt(i);
+            inactiveBoltsObj.Add(boltObj);
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, AttackRange);
+    }
 
     IEnumerator AttackNearestWithBolt()
     {
         while (true)
         {
-            // Create a (pooled) bolt to nearest meteo
-            if (nearbyMeteors.Count > 0)
+            if (friendMover.isMoving)
             {
                 float nearestSqr = Mathf.Infinity;
-                GameObject nearestMeteo = null;
+                MainObject nearestMeteo = null;
                 // Find nearby meteo
-                foreach (GameObject meteo in nearbyMeteors)
+                foreach (MainObject meteo in newMeteo.meteoList)
                 {
-                    float distanceSqr = (meteo.transform.position - transform.position).sqrMagnitude;
+                    float distanceSqr = (meteo.ballPos - transform.position).sqrMagnitude;
                     if (distanceSqr < nearestSqr)
                     {
                         nearestSqr = distanceSqr;
@@ -99,28 +120,21 @@ public class LightningAttack : MonoBehaviour {
                     }
                 }
 
-                for (int i = 0; i < NumberOfBoltLine; i++)
-                    CreatePooledBolt(transform.position, nearestMeteo.transform.position, Color.white, Thickness);
-
-                yield return new WaitForSeconds(AttackDelayTime);
+                // If the nearest meteo is in the attack range,
+                Vector3 AttackPoint = nearestMeteo.stone.transform.position;
+                if ((transform.position - AttackPoint).sqrMagnitude <= AttackRange * AttackRange)
+                {
+                    // Create a (pooled) bolt to nearest meteo
+                    for (int i = 0; i < NumberOfBoltLine; i++)
+                        CreatePooledBolt(transform.position, AttackPoint, Color.white, Thickness);
+                    nearestMeteo.stone.GetComponent<CrushMeteo>().Crush();
+                    yield return new WaitForSeconds(AttackDelayTime);
+                }
             }
             yield return null;
         }
 
     }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("meteo"))
-            nearbyMeteors.Add(collision.gameObject);
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.CompareTag("meteo"))
-            nearbyMeteors.Remove(collision.gameObject);
-    }
-
 
     void CreatePooledBolt(Vector2 source, Vector2 dest, Color color, float thickness)
     {

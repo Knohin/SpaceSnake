@@ -29,24 +29,11 @@ public class CrushHole : MonoBehaviour {
                     //newMeteo.meteoList[i].moveSpeed = 0;
                     //newMeteo.meteoList[i].stone.transform.position = Vector3.MoveTowards(newMeteo.meteoList[i].ballPos, this.gameObject.transform.position, Time.deltaTime * 0.02f);
                 }
-
             }
-
         }
         else if(other.gameObject.tag.Equals("Friend"))
         {
-            StartCoroutine("Drag", other.gameObject);
-        }
-        else if(other.gameObject.tag.Equals("tail"))
-        {
-            for (int i = 0; i < newFriends.friendList.Count; i++)
-            {
-                if(newFriends.friendList[i].equal_Stone(other.gameObject))
-                {
-                    newFriends.friendList[i].b_Blackhole = true;
-                    hole_Pos = this.gameObject.transform.position;
-                }
-            }
+            //StartCoroutine("Drag", other.gameObject);
         }
     }
 
@@ -63,10 +50,8 @@ public class CrushHole : MonoBehaviour {
                 fm.FloatingFriends.Remove(go);
                 break;
             }
-
             yield return null;
         }
-
         yield return null;
     }
 }

@@ -2,18 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CrushItem : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
-
-	}
-	
-	// Update is called once per frame
-	void Update () {
-
-    }
-
+public class CrushItem : MonoBehaviour
+{
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.tag.Equals("Friend")) // item <-> player

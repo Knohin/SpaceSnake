@@ -17,12 +17,10 @@ public class FriendCollider : MonoBehaviour {
     {
         if (collision.tag == "Meteoroid")
         {
-            Debug.Log("OnTriggerEnter() in FriendCollider");
             TextLog.Print("OnTriggerEnter() in FriendCollider");
         }
         else if (collision.tag == "Friend")
         {
-            TextLog.Print("OnTriggerEnter() in FriendCollider with tag");
             if (friendMover.isMoving)
             {
                 //TextLog.Print("디즴");

@@ -40,7 +40,7 @@ public class FriendsManager : MonoBehaviour {
 
         // Pre-make objects to pool
         int NumberOfFriends = FriendsPrefab.Length;
-        for (int i = 100 / NumberOfFriends; 0 < i; i--)
+        for (int i = 50 / NumberOfFriends; 0 < i; i--)
         {
             for(int j = NumberOfFriends-1; 0 <= j; j--)
             {
@@ -51,16 +51,22 @@ public class FriendsManager : MonoBehaviour {
             }
         }
 
-        InvokeRepeating("SpawnFriends", 4.5f, 5);
+        InvokeRepeating("SpawnFriends", 1.5f, 5);
     }
 
     private void Update()
     {
         //////////////////
         // Get input
+#if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0) || (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began))
+#elif UNITY_WEBGL
+        if (Input.GetMouseButtonDown(0))
+            TextLog.Print("-Click at frame " + Time.frameCount);
+        if ((Input.touchCount == 1) && (Input.GetTouch(0).phase == TouchPhase.Began))
+#endif
         {
-            TextLog.Print("------------------Touch");
+            TextLog.Print("-Touch at frame " + Time.frameCount);
             // Change direction of a Head of Friends
             MovingFriends[MovingFriends.Count - 1].GetComponent<FriendMover>().ChangeDirection();
 
@@ -102,7 +108,7 @@ public class FriendsManager : MonoBehaviour {
         float x = Random.Range(-5.5f, 5.5f);
         float y = Random.Range(-9.5f, 9.5f);
 
-        int cha = Random.Range(0, InActiveFriends.Count-1);
+        int cha = InActiveFriends.Count - 3;// Random.Range(0, InActiveFriends.Count-1);
         GameObject newFriend = InActiveFriends[cha];
 
         InActiveFriends.RemoveAt(cha);

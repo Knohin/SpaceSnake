@@ -17,7 +17,7 @@ public class LightningAttack : MonoBehaviour {
     int maxBolts = 20;
 
     // For finding the nearest meteo
-    newMeteo meteoManager;
+    //newMeteo meteoManager;
 
     FriendMover friendMover;
 
@@ -26,7 +26,7 @@ public class LightningAttack : MonoBehaviour {
         activeBoltsObj = new List<GameObject>();
         inactiveBoltsObj = new List<GameObject>();
         
-        meteoManager = GameObject.Find("GameManager").GetComponent<newMeteo>();
+        //meteoManager = GameObject.Find("GameManager").GetComponent<newMeteo>();
 
         friendMover = transform.GetComponentInParent<FriendMover>();
 

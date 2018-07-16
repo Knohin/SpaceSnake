@@ -5,6 +5,7 @@ TextureImporter:
     21300000: ThunderLine_cap
     21300002: ThunderLine_1
     21300004: ThunderLine_middle
+    21300006: White_Square
   externalObjects: {}
   serializedVersion: 5
   mipmaps:
@@ -131,6 +132,26 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 2b5217d13e38fa54c816d7f3789a06bc
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: White_Square
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 28
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5b42982763bf20041bd295863a65d4fe
       vertices: []
       indices: 
       edges: []

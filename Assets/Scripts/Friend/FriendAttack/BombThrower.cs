@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(FriendMover))]
 public class BombThrower : MonoBehaviour {
 
     public GameObject SpikeBombPrefab;
@@ -17,7 +16,7 @@ public class BombThrower : MonoBehaviour {
 
     private void Awake()
     {
-        friendMover = GetComponent<FriendMover>();
+        friendMover = GetComponentInParent<FriendMover>();
         spikeBomb = Instantiate(SpikeBombPrefab).GetComponent<SpikeBomb>();
         spikeBomb.transform.parent = transform;
         spikeBomb.gameObject.SetActive(false);

@@ -153,9 +153,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minPos: {x: -5.8, y: -10}
   maxPos: {x: 5.8, y: 10}
+  level0Active: 1
   level0: {fileID: 0}
+  level1Active: 0
   level1: {fileID: 0}
+  level2Active: 0
   level2: {fileID: 0}
+  level3Active: 0
   level3: {fileID: 0}
   Portal: {fileID: 0}
   Hole: {fileID: 0}

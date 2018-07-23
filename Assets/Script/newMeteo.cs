@@ -8,9 +8,13 @@ public class newMeteo : MonoBehaviour {
     public Vector2 minPos;
     public Vector2 maxPos;
 
+    public bool level0Active;
     public GameObject level0;
+    public bool level1Active;
     public GameObject level1;
+    public bool level2Active;
     public GameObject level2;
+    public bool level3Active;
     public GameObject level3;
 
     public GameObject Portal;
@@ -26,15 +30,14 @@ public class newMeteo : MonoBehaviour {
     public static float period;
 
     // For pooling
-    public static List<MainObject> meteoList; // active meteors
+    public static List<MainObject> meteoList = new List<MainObject>(50); // active meteors
     List<GameObject> InactiveMeteoLevel0;
     int MaxNumOfMeteoLevel0 = 30;
     Transform meteoPoolHolder;
 
-
-    IEnumerator Start()
+    private void Awake()
     {
-        meteoList = new List<MainObject>(50);
+        //meteoList = new List<MainObject>(50);
         period = 2.0f;
 
         Portal.gameObject.SetActive(false);
@@ -48,25 +51,31 @@ public class newMeteo : MonoBehaviour {
         // Pre-Make Meteo Level 0
         InactiveMeteoLevel0 = new List<GameObject>();
         GameObject newMeteo = null;
-        for(int i= MaxNumOfMeteoLevel0; 0 < i; --i)
+        for (int i = MaxNumOfMeteoLevel0; 0 < i; --i)
         {
             newMeteo = Instantiate(level0);
             newMeteo.transform.parent = meteoPoolHolder;
             newMeteo.SetActive(false);
             InactiveMeteoLevel0.Add(newMeteo);
         }
+    }
 
-
+    IEnumerator Start()
+    {
         //yield return StartCoroutine("ReadyToStart");
 
         Invoke("SpawnMeteo", 1.5f);
         Invoke("SpawnMeteo", 1.5f);
         Invoke("SpawnMeteo", 1.5f);
 
-        InvokeRepeating("SpawnMeteo", 2.0f, period);
-        InvokeRepeating("SpawnMeteo1", 20, period * 5.0f);
-        InvokeRepeating("SpawnMeteo2", 40, period * 10.0f);
-        InvokeRepeating("SpawnMeteo3", 60, period * 15.0f);
+        if(level0Active)
+            InvokeRepeating("SpawnMeteo", 2.0f, period);
+        if (level1Active)
+            InvokeRepeating("SpawnMeteo1", 20, period * 5.0f);
+        if (level2Active)
+            InvokeRepeating("SpawnMeteo2", 40, period * 10.0f);
+        if (level3Active)
+            InvokeRepeating("SpawnMeteo3", 60, period * 15.0f);
 
         //StartCoroutine("SpawnPortal");
         StartCoroutine("SpawnHole");

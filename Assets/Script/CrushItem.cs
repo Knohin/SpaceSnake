@@ -2,43 +2,46 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CrushItem : MonoBehaviour
-{
+public class CrushItem : MonoBehaviour {
+
+    //private FriendsManager friendsManager;
+    
+    // Use this for initialization
+    void Start () {
+
+        //friendsManager = GameObject.Find("GameManager").GetComponent<FriendsManager>();
+    }
+    
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.tag.Equals("Friend")) // item <-> player
         {
-            for (int i = 0; i < newItem.itemList.Count; i++)
+            if (other.gameObject.GetComponent<FriendMover>().isMoving)
             {
-                if (newItem.itemList[i].equal_Stone(this.gameObject))
+                for (int i = 0; i < newItem.itemList.Count; i++)
                 {
-                    if (newItem.itemList[i].stone.name.Equals("bomb(Clone)"))
+                    if (newItem.itemList[i].equal_Stone(this.gameObject))
                     {
-                        Debug.Log("Bomb");
-                        newMeteo.period -= 0.05f;
-
-                        for(int k = 0; k < newMeteo.meteoList.Count/2; k++)
+                        if (newItem.itemList[i].stone.name.Equals("crown(Clone)"))
                         {
-                            Destroy(newMeteo.meteoList[k].stone);
-                            newMeteo.meteoList[k].stone = null;
-                            newMeteo.meteoList.RemoveAt(k);
+                            //Debug.Log("Crown");
+                            // start에 코루틴 키고 bool 로 조정?
+                            FriendsManager.b_Crown = true;
                         }
-
+                        else // bullet
+                        {
+                            //Debug.Log("Bullet");
+                            FriendsManager.b_Bullet = true;
+                        }
+                        Item_Sound.item.Play();
+                        newItem.itemList.RemoveAt(i);
                     }
-                    else if (newItem.itemList[i].stone.name.Equals("crown(Clone)"))
-                    {
-                        Debug.Log("Crown");
-                    }
-                    else // bullet
-                    {
-                        Debug.Log("Bullet");
-                    }
-                    Item_Sound.item.Play();
-                    newItem.itemList.RemoveAt(i);
+                    Destroy(this.gameObject);
                 }
-                Destroy(this.gameObject);
             }
         }
+
+
     }
     
 }

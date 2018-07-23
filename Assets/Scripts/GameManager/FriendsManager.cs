@@ -17,6 +17,11 @@ public class FriendsManager : MonoBehaviour {
     [Space(10)]
     public GameObject[] FriendsPrefab;
 
+    public GameObject Crown;
+    public GameObject score_Panel;
+    public static bool b_Crown;
+    public static bool b_Bullet;
+
     private void Awake()
     {
         MovingFriends = new List<GameObject>();
@@ -33,6 +38,7 @@ public class FriendsManager : MonoBehaviour {
         f.transform.parent = friendPoolHolder;
         FriendMover fm = f.GetComponent<FriendMover>();
         fm.isMoving = true;
+        fm.indexFromHead = 0;
         fm.Speed = MovingSpeedAtStart;
         fm.CircleCenter = (Vector2)transform.position + Vector2.right * fm.Radius;
 
@@ -47,15 +53,36 @@ public class FriendsManager : MonoBehaviour {
                 GameObject friend = Instantiate(FriendsPrefab[j]);
                 friend.transform.parent = friendPoolHolder;
                 friend.SetActive(false);
+                friend.GetComponent<FriendMover>().indexFromHead = -1;
                 InActiveFriends.Add(friend);
             }
         }
 
-        InvokeRepeating("SpawnFriends", 1.5f, 5);
+        //Crown
+        Crown.SetActive(false);
+
+        InvokeRepeating("SpawnFriends", 1.5f, 5.0f);
     }
 
     private void Update()
     {
+        //둥실둥실
+        for (int i = 0; i < FloatingFriends.Count; i++)
+        {
+            FloatingFriends[i].transform.Rotate(0, 0, -0.5f);
+        }
+
+        if (b_Crown)
+        {
+            StartCoroutine("Crown_Effect");
+        }
+
+        if (b_Bullet)
+        {
+            StartCoroutine("Bullet_Effect");
+        }
+
+
         //////////////////
         // Get input
 #if UNITY_EDITOR
@@ -108,7 +135,7 @@ public class FriendsManager : MonoBehaviour {
         float x = Random.Range(-5.5f, 5.5f);
         float y = Random.Range(-9.5f, 9.5f);
 
-        int cha = InActiveFriends.Count - 3;// Random.Range(0, InActiveFriends.Count-1);
+        int cha = Random.Range(0, InActiveFriends.Count - 1); //InActiveFriends.Count - 3;
         GameObject newFriend = InActiveFriends[cha];
 
         InActiveFriends.RemoveAt(cha);
@@ -138,11 +165,18 @@ public class FriendsManager : MonoBehaviour {
             Mathf.Sin(thetaAhead) * centerToCurrent.x + Mathf.Cos(thetaAhead) * centerToCurrent.y
         );
         newFriend.transform.position = head.CircleCenter + centerToTarget;
+        newFriend.transform.rotation = Quaternion.identity;
         newFriend.GetComponent<FriendMover>().Speed = head.Speed;
         newFriend.GetComponent<FriendMover>().isMoving = true;
+        newFriend.GetComponent<FriendMover>().indexFromHead = 0;
         newFriend.GetComponent<FriendMover>().CircleCenter = head.CircleCenter;
         newFriend.GetComponent<FriendMover>().IsClockwise = head.IsClockwise;
         MovingFriends.Add(newFriend);
+
+        for(int i = MovingFriends.Count-2; 0 <= i; --i)
+        {
+            MovingFriends[i].GetComponent<FriendMover>().indexFromHead++;
+        }
     }
 
     public void DetachFriend(GameObject oldFriend)
@@ -150,9 +184,45 @@ public class FriendsManager : MonoBehaviour {
         int idx = MovingFriends.IndexOf(oldFriend);
         for(int i=idx; 0 <= i; --i)
         {
+            MovingFriends[i].GetComponent<FriendMover>().indexFromHead = -1;
             MovingFriends[i].SetActive(false);
             InActiveFriends.Add(MovingFriends[i]);
         }
         MovingFriends.RemoveRange(0, idx + 1);
+    }
+
+    IEnumerator Crown_Effect()
+    {
+
+        Crown.SetActive(true);
+        Vector3 nv = MovingFriends[MovingFriends.Count - 1].transform.position + new Vector3(-0.1f, 1.15f, 0f);
+
+        Crown.transform.position = nv;
+
+        for (int i = 0; i < MovingFriends.Count; i++)
+        {
+            MovingFriends[i].GetComponent<CapsuleCollider2D>().enabled = false;
+        }
+
+
+        yield return new WaitForSeconds(3.0f);
+
+
+        b_Crown = false;
+        for (int i = 0; i < MovingFriends.Count; i++)
+        {
+            MovingFriends[i].GetComponent<CapsuleCollider2D>().enabled = true;
+        }
+
+        Crown.SetActive(false);
+    }
+
+    IEnumerator Bullet_Effect()
+    {
+        // 총알 주기 or 파워
+        yield return new WaitForSeconds(3.0f);
+        b_Bullet = false;
+
+
     }
 }

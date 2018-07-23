@@ -14,16 +14,40 @@ public class CrushMeteo : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.gameObject.tag.Equals("Friend")) // meteo <-> player
-        {
-            //Crush();
-        }
+        //if(other.gameObject.tag.Equals("Friend")) // meteo <-> player
+        //{
+        //    if (other.GetComponent<FriendMover>().isMoving)
+        //    {
+        //        other.GetComponent<FriendCollider>().Die();
+        //        Crush();
+        //    }
+        //}
     }
 
     public void Crush()
     {
-        eff.Boom(gameObject.transform.position);
-        meteoManager.RemoveMeteo(gameObject);
+        MainObject meteo = newMeteo.FindMeteo(gameObject);
+        if (meteo == null)
+            TextLog.Print("a??????????");
 
+        ScoringManager.meteo_Score += 100;
+        /// health 줄이고
+        meteo.health--;
+
+        /// 0 이면
+        if (meteo.health < 1)
+        {
+            eff.Boom(gameObject.transform.position);
+            meteoManager.RemoveMeteo(gameObject);
+        }
+    }
+
+    IEnumerator meteo_Effect(Vector3 pos)
+    {
+        eff.transform.position = new Vector3(pos.x, pos.y, 0);
+        eff.gameObject.SetActive(true);
+        yield return new WaitForSeconds(0.05f);
+        eff.gameObject.SetActive(false);
+        Destroy(this.gameObject);
     }
 }

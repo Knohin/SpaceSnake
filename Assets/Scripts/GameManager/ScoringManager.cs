@@ -7,26 +7,26 @@ public class ScoringManager : MonoBehaviour {
 
     public Text ScoreText;
 
-    private bool isScoring = true;
+    public static float score = 0;
 
-    private float score = 0;
+    public static float save_Score;
+    public static float meteo_Score;
+    public static float time_Score;
+
+    private void Start()
+    {
+        score = 0;
+        save_Score = 0;
+        meteo_Score = 0;
+        time_Score = 0;
+    }
 
     private void Update()
     {
-        if (!isScoring)
-            return;
+        time_Score += Time.deltaTime * 100;
 
-        score += Time.deltaTime * 100;
+        score = save_Score + meteo_Score + time_Score;
 
         ScoreText.text = "Score : " + (int)score;
-    }
-
-    public void StartScoring()
-    {
-        isScoring = true;
-    }
-    public void StopScoring()
-    {
-        isScoring = false;
     }
 }

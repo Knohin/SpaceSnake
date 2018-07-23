@@ -133,6 +133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 0
   isMoving: 0
+  indexFromHead: -1
 --- !u!114 &114747321651201756
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -147,7 +148,7 @@ MonoBehaviour:
   BulletPrefab: {fileID: 1892986512662072, guid: 3e0e744591a6771458d214bec05bbbd0,
     type: 2}
   BulletSpeed: 2
-  ShotDelay: 1
+  ShotDelay: 3
   Thickness: 0.5
 --- !u!212 &212805086745207378
 SpriteRenderer:

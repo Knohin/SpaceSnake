@@ -8,6 +8,7 @@ public class FriendMover : MonoBehaviour
 
     [HideInInspector] public LinkedListNode<Vector2> destination = null;
     [HideInInspector] public bool isMoving = false;
+    [HideInInspector] public int indexFromHead = -1; // 이거 넣으면 사실상 위에 있는 변수(isMoving)는 필요가 없음
 
     private bool isClockwise = true;
     public bool IsClockwise { get { return isClockwise; } set { isClockwise = value; } }

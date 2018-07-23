@@ -151,8 +151,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6dd9cf21512dd1140abc0f5d8c887e57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minPos: {x: -5.8, y: -10}
-  maxPos: {x: 5.8, y: 10}
+  minPos: {x: -5.3, y: -9.5}
+  maxPos: {x: 5.3, y: 9.5}
   level0Active: 1
   level0: {fileID: 0}
   level1Active: 0
@@ -175,9 +175,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 109786e6adc9b9445a4f78ba88063e1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minPos: {x: -5.8, y: -10}
-  maxPos: {x: 5.8, y: 10}
-  bomb: {fileID: 0}
+  minPos: {x: -5.3, y: -9.5}
+  maxPos: {x: 5.3, y: 9.5}
+  magnet: {fileID: 0}
   crown: {fileID: 0}
   bullet: {fileID: 0}
 --- !u!114 &114463161765188808
@@ -205,6 +205,8 @@ MonoBehaviour:
   - {fileID: 1344979391021936, guid: fa03b5cae14cadd4ebd629ee02bd0e5f, type: 2}
   - {fileID: 1031805991546036, guid: 4bb16ff856bf4e44ba071676ec863908, type: 2}
   - {fileID: 1002840194189812, guid: fe9e9074a81e5b244b1790797f9bb2ea, type: 2}
+  Crown: {fileID: 0}
+  score_Panel: {fileID: 0}
 --- !u!114 &114526679700309152
 MonoBehaviour:
   m_ObjectHideFlags: 1

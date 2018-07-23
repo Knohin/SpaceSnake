@@ -69,22 +69,24 @@ public class newMeteo : MonoBehaviour {
         Invoke("SpawnMeteo", 1.5f);
 
         if(level0Active)
-            InvokeRepeating("SpawnMeteo", 2.0f, period);
+            StartCoroutine("Meteo_routine");
         if (level1Active)
-            InvokeRepeating("SpawnMeteo1", 20, period * 5.0f);
+            StartCoroutine("Meteo1_routine");
         if (level2Active)
-            InvokeRepeating("SpawnMeteo2", 40, period * 10.0f);
+            StartCoroutine("Meteo2_routine");
         if (level3Active)
-            InvokeRepeating("SpawnMeteo3", 60, period * 15.0f);
+            StartCoroutine("Meteo3_routine");
 
-        //StartCoroutine("SpawnPortal");
-        StartCoroutine("SpawnHole");
 
         yield return null;
     }
 
     void Update()
     {
+        // 난이도 조절
+        if (period > 0.2f)
+            period -= 0.0005f;
+
         for (int i = 0; i < meteoList.Count; i++)
         {
             if (!meteoList[i].b_Blackhole)
@@ -96,10 +98,10 @@ public class newMeteo : MonoBehaviour {
             }
             else
             {
-                if (active_Hole)
+                if (CrushMagnet.active_Hole)
                 {
                     // 크기 별 중력 다르게 적용?
-                    meteoList[i].stone.transform.position = Vector3.MoveTowards(meteoList[i].stone.transform.position, CrushHole.hole_Pos, Time.deltaTime * 2.0f);
+                    meteoList[i].stone.transform.position = Vector3.MoveTowards(meteoList[i].stone.transform.position, CrushHole.hole_Pos, Time.deltaTime * 1.5f);
 
                     if (meteoList[i].stone.transform.position.Equals(CrushHole.hole_Pos))
                     {
@@ -116,66 +118,54 @@ public class newMeteo : MonoBehaviour {
             }
 
         }
-
-        if (Hole.gameObject.activeSelf)
-        {
-            Hole.gameObject.transform.Rotate(0, 0, 3.0f);
-            active_Hole = true;
-        }
-        else
-        {
-            active_Hole = false;
-        }
-
-        if (Portal.gameObject.activeSelf)
-        {
-            Portal.gameObject.transform.Rotate(0, 0, 3.0f);
-        }
     }
 
-    IEnumerator SpawnPortal()
-    {
-        yield return new WaitForSeconds(10.0f);
-
-        while (true)
-        {
-            float x = Random.Range(-5.0f, 5.0f);
-            float y = Random.Range(-9.0f, 9.0f);
-
-            Portal.gameObject.transform.position = new Vector3(x, y, 0);
-
-            Portal.gameObject.SetActive(true);
-
-            yield return new WaitForSeconds(5.0f);
-
-            Portal.gameObject.SetActive(false);
-
-            yield return new WaitForSeconds(10.0f);
-        }
-
-    }
-
-    IEnumerator SpawnHole()
+    IEnumerator Meteo_routine()
     {
         yield return new WaitForSeconds(1.0f);
 
         while (true)
         {
-            float x = Random.Range(-5.0f, 5.0f);
-            float y = Random.Range(-9.0f, 9.0f);
+            SpawnMeteo();
 
-            Hole.gameObject.transform.position = new Vector3(0, 7, 0); //(x, y, 0);
-
-            Hole.gameObject.SetActive(true);
-
-            yield return new WaitForSeconds(5.0f);
-
-            Hole.gameObject.SetActive(false);
-
-            yield return new WaitForSeconds(5.0f);
-
+            yield return new WaitForSeconds(period);
         }
+    }
 
+    IEnumerator Meteo1_routine()
+    {
+        yield return new WaitForSeconds(20.0f);
+        period += 0.2f;
+        while (true)
+        {
+            SpawnMeteo1();
+
+            yield return new WaitForSeconds(period * 5.0f);
+        }
+    }
+    IEnumerator Meteo2_routine()
+    {
+        yield return new WaitForSeconds(40.0f);
+        period += 0.3f;
+
+        while (true)
+        {
+            SpawnMeteo2();
+
+            yield return new WaitForSeconds(period * 10.0f);
+        }
+    }
+    IEnumerator Meteo3_routine()
+    {
+        yield return new WaitForSeconds(60.0f);
+        period += 0.4f;
+
+        while (true)
+        {
+            SpawnMeteo3();
+
+            yield return new WaitForSeconds(period * 15.0f);
+        }
     }
 
     void SpawnMeteo()
@@ -320,5 +310,15 @@ public class newMeteo : MonoBehaviour {
                 break;
             }
         }
+    }
+
+    public static MainObject FindMeteo(GameObject go)
+    {
+        foreach(MainObject mo in meteoList)
+        {
+            if (mo.equal_Stone(go))
+                return mo;
+        }
+        return null;
     }
 }

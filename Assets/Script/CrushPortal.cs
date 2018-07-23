@@ -5,17 +5,11 @@ using UnityEngine;
 public class CrushPortal : MonoBehaviour {
 
     public GameObject eff;
-
-	// Use this for initialization
+    
 	void Start () {
-
         eff.gameObject.SetActive(false);
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
     IEnumerator light_Effect(Vector3 pos)
     {

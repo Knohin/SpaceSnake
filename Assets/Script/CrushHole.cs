@@ -6,12 +6,12 @@ public class CrushHole : MonoBehaviour {
 
     public static Vector3 hole_Pos;
 
-    private FriendsManager fm;
+    //private FriendsManager fm;
 
 	// Use this for initialization
 	void Start () {
         hole_Pos = Vector3.one;
-        fm = GameObject.Find("GameManager").GetComponent<FriendsManager>();
+    //    fm = GameObject.Find("GameManager").GetComponent<FriendsManager>();
 	}
 	
 
@@ -37,21 +37,21 @@ public class CrushHole : MonoBehaviour {
         }
     }
 
-    IEnumerator Drag(GameObject go)
-    {
-        while (newMeteo.active_Hole)
-        {
-            go.transform.position = Vector3.MoveTowards(go.transform.position,
-            CrushHole.hole_Pos, Time.deltaTime * 2.0f);
+//    IEnumerator Drag(GameObject go)
+//    {
+//        while (newMeteo.active_Hole)
+//        {
+//            go.transform.position = Vector3.MoveTowards(go.transform.position,
+//            CrushHole.hole_Pos, Time.deltaTime * 2.0f);
 
-            if (go.transform.position.Equals(CrushHole.hole_Pos))
-            {
-                fm.DetachFriend(go);
-                fm.FloatingFriends.Remove(go);
-                break;
-            }
-            yield return null;
-        }
-        yield return null;
-    }
+//            if (go.transform.position.Equals(CrushHole.hole_Pos))
+//            {
+//                fm.DetachFriend(go);
+//                fm.FloatingFriends.Remove(go);
+//                break;
+//            }
+//            yield return null;
+//        }
+//        yield return null;
+//    }
 }

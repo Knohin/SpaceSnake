@@ -67,7 +67,7 @@ public class Gun : MonoBehaviour
         for (int i = 0; i < BulletNum; ++i)
         {
             // Set position
-            bullets[i].transform.localPosition = new Vector3(0, 0, bullets[i].transform.localPosition.z) + bulletsDirection[i]* BulletSpeed / 2.0f;
+            bullets[i].transform.localPosition = new Vector3(0, 0, bullets[i].transform.localPosition.z) + bulletsDirection[i]* BulletSpeed * 0.34f;
             // Set scale
             bullets[i].transform.localScale = new Vector3(BulletSpeed * pixel2Unit,
                                                          Thickness,
@@ -80,7 +80,7 @@ public class Gun : MonoBehaviour
 
         const float MaxRange = 20f;
         float distanceMoved = .0f;
-        float actualSpeed = BulletSpeed * 0.7f; // 너무 빠르면 중간중간 떨어져있는 느낌?
+        float actualSpeed = BulletSpeed * 0.5f; // 너무 빠르면 중간중간 떨어져있는 느낌?
         while (distanceMoved < MaxRange)
         {
             // Move

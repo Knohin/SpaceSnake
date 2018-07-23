@@ -10,16 +10,16 @@ public class newItem : MonoBehaviour
 
     public static List<MainObject> itemList;
 
-    public GameObject bomb;
+    public GameObject magnet;
     public GameObject crown;
     public GameObject bullet;
 
     void SpawnItem()
     {
-        float x = Random.Range(-5.5f, 5.5f);
-        float y = Random.Range(-9.5f, 9.5f);
+        float x = Random.Range(-5.2f, 5.2f);
+        float y = Random.Range(-9.2f, 9.2f);
 
-        int cha = Random.Range(1, 7); // 1 ~ 6 -> 1 -> 무적, 2, 3, 4 -> 총알, 5,6 -> 터뜨리기
+        int cha = Random.Range(1, 2); // 1 ~ 6 -> 1 -> 무적, 2, 3, 4 -> 총알, 5,6 -> 터뜨리기
 
         if (cha == 1)
         {
@@ -28,10 +28,11 @@ public class newItem : MonoBehaviour
         else if (cha == 2 || cha == 3 || cha == 4)
         {
             itemList.Add(new MainObject(Instantiate(bullet, new Vector3(x, y, 0f), Quaternion.identity), new Vector2(-1, -1), new Vector3(x, y, 0f), 0.02f));
+
         }
         else
         {
-            itemList.Add(new MainObject(Instantiate(bomb, new Vector3(x, y, 0f), Quaternion.identity), new Vector2(1, 1), new Vector3(x, y, 0f), 0.02f));
+            itemList.Add(new MainObject(Instantiate(magnet, new Vector3(x, y, 0f), Quaternion.identity), new Vector2(1, 1), new Vector3(x, y, 0f), 0.02f));
         }
 
     }
@@ -62,17 +63,20 @@ public class newItem : MonoBehaviour
             {
                 itemList[i].moveValue.x *= -1;
                 itemList[i].ballPos.x += maxPos.x - itemList[i].ballPos.x;
+
             }
 
             if (itemList[i].ballPos.y < minPos.y)
             {
                 itemList[i].moveValue.y *= -1;
                 itemList[i].ballPos.y += minPos.y - itemList[i].ballPos.y;
+
             }
             else if (itemList[i].ballPos.y > maxPos.y)
             {
                 itemList[i].moveValue.y *= -1;
                 itemList[i].ballPos.y += maxPos.y - itemList[i].ballPos.y;
+
             }
 
             //itemList[i].stone.transform.Rotate(0, 0, 5.0f);

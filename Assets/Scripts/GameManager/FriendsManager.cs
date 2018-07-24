@@ -22,6 +22,8 @@ public class FriendsManager : MonoBehaviour {
     public static bool b_Crown;
     public static bool b_Bullet;
 
+    bool isTouching = false;
+
     private void Awake()
     {
         MovingFriends = new List<GameObject>();
@@ -66,49 +68,27 @@ public class FriendsManager : MonoBehaviour {
 
     private void Update()
     {
-        //둥실둥실
-        for (int i = 0; i < FloatingFriends.Count; i++)
-        {
-            FloatingFriends[i].transform.Rotate(0, 0, -0.5f);
-        }
-
-        if (b_Crown)
-        {
-            StartCoroutine("Crown_Effect");
-        }
-
-        if (b_Bullet)
-        {
-            StartCoroutine("Bullet_Effect");
-        }
-
-
         //////////////////
         // Get input
-#if UNITY_EDITOR
-        if (Input.GetMouseButtonDown(0) || (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began))
-#elif UNITY_WEBGL
         if (Input.GetMouseButtonDown(0))
-            TextLog.Print("-Click at frame " + Time.frameCount);
-        if ((Input.touchCount == 1) && (Input.GetTouch(0).phase == TouchPhase.Began))
-#endif
         {
-            TextLog.Print("-Touch at frame " + Time.frameCount);
-            // Change direction of a Head of Friends
-            MovingFriends[MovingFriends.Count - 1].GetComponent<FriendMover>().ChangeDirection();
-
-            // Add current position to changeDirectionPoint
-            if (MovingFriends.Count > 1)
+            TextLog.Print("-Click at frame " + Time.frameCount);
+            ChangeDirection();
+        }
+        if (0 < Input.touchCount)
+        {
+            if (Input.GetTouch(0).phase == TouchPhase.Began)
             {
-                changeDirectionPoint.AddLast(MovingFriends[MovingFriends.Count - 1].transform.position);
+                TextLog.Print("-Touch at frame " + Time.frameCount);
+                if (!isTouching)
+                    ChangeDirection();
+
+                isTouching = true;
             }
-
-            // Set destination of the Tails
-            for (int i = MovingFriends.Count - 2; i >= 0; i--)
+            else if (Input.GetTouch(0).phase == TouchPhase.Ended)
             {
-                if (MovingFriends[i].GetComponent<FriendMover>().destination != null)
-                    break;
-                MovingFriends[i].GetComponent<FriendMover>().destination = changeDirectionPoint.Last;
+                TextLog.Print("-TouchEnd at frame " + Time.frameCount);
+                isTouching = false;
             }
         }
 
@@ -125,6 +105,16 @@ public class FriendsManager : MonoBehaviour {
         while (dest != changeDirectionPoint.First)
             changeDirectionPoint.RemoveFirst();
 
+
+        //둥실둥실
+        for (int i = 0; i < FloatingFriends.Count; i++)
+            FloatingFriends[i].transform.Rotate(0, 0, -0.5f);
+
+        if (b_Crown)
+            StartCoroutine("Crown_Effect");
+
+        if (b_Bullet)
+            StartCoroutine("Bullet_Effect");
     }
 
     void SpawnFriends()
@@ -145,8 +135,31 @@ public class FriendsManager : MonoBehaviour {
         FloatingFriends.Add(newFriend);
     }
 
+    void ChangeDirection()
+    {
+        // Change direction of a Head of Friends
+        MovingFriends[MovingFriends.Count - 1].GetComponent<FriendMover>().ChangeDirection();
+
+        // Add current position to changeDirectionPoint
+        if (MovingFriends.Count > 1)
+        {
+            changeDirectionPoint.AddLast(MovingFriends[MovingFriends.Count - 1].transform.position);
+        }
+
+        // Set destination of the Tails
+        for (int i = MovingFriends.Count - 2; i >= 0; i--)
+        {
+            if (MovingFriends[i].GetComponent<FriendMover>().destination != null)
+                break;
+            MovingFriends[i].GetComponent<FriendMover>().destination = changeDirectionPoint.Last;
+        }
+    }
+
     public void AttachFriend(GameObject newFriend)
     {
+        // Scoring
+        ScoringManager.save_Score += 100;
+
         // FloatingFriends 에서 찾고, 제거하고
         FloatingFriends.Remove(newFriend);
 
@@ -184,6 +197,7 @@ public class FriendsManager : MonoBehaviour {
         int idx = MovingFriends.IndexOf(oldFriend);
         for(int i=idx; 0 <= i; --i)
         {
+            MovingFriends[i].GetComponent<FriendMover>().isMoving = false;
             MovingFriends[i].GetComponent<FriendMover>().indexFromHead = -1;
             MovingFriends[i].SetActive(false);
             InActiveFriends.Add(MovingFriends[i]);
@@ -193,28 +207,18 @@ public class FriendsManager : MonoBehaviour {
 
     IEnumerator Crown_Effect()
     {
-
-        Crown.SetActive(true);
         Vector3 nv = MovingFriends[MovingFriends.Count - 1].transform.position + new Vector3(-0.1f, 1.15f, 0f);
 
         Crown.transform.position = nv;
 
-        for (int i = 0; i < MovingFriends.Count; i++)
+        if (!Crown.activeSelf)
         {
-            MovingFriends[i].GetComponent<CapsuleCollider2D>().enabled = false;
+            TextLog.Print("Crown");
+            Crown.SetActive(true);
+            yield return new WaitForSeconds(3.0f);
+            b_Crown = false;
+            Crown.SetActive(false);
         }
-
-
-        yield return new WaitForSeconds(3.0f);
-
-
-        b_Crown = false;
-        for (int i = 0; i < MovingFriends.Count; i++)
-        {
-            MovingFriends[i].GetComponent<CapsuleCollider2D>().enabled = true;
-        }
-
-        Crown.SetActive(false);
     }
 
     IEnumerator Bullet_Effect()
@@ -222,7 +226,5 @@ public class FriendsManager : MonoBehaviour {
         // 총알 주기 or 파워
         yield return new WaitForSeconds(3.0f);
         b_Bullet = false;
-
-
     }
 }

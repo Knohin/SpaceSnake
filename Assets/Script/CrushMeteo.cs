@@ -28,7 +28,7 @@ public class CrushMeteo : MonoBehaviour {
     {
         MainObject meteo = newMeteo.FindMeteo(gameObject);
         if (meteo == null)
-            TextLog.Print("a??????????");
+            return;
 
         ScoringManager.meteo_Score += 100;
         /// health 줄이고

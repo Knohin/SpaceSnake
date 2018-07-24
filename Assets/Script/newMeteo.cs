@@ -38,6 +38,7 @@ public class newMeteo : MonoBehaviour {
     private void Awake()
     {
         //meteoList = new List<MainObject>(50);
+         meteoList = new List<MainObject>(50); // active meteors
         period = 2.0f;
 
         Portal.gameObject.SetActive(false);
@@ -197,13 +198,13 @@ public class newMeteo : MonoBehaviour {
         GameObject newMeteo = Instantiate(level1, new Vector3(x, y, 0f), Quaternion.identity);
         newMeteo.transform.parent = meteoPoolHolder;
         if (y >= 0 && t == 1)
-            meteoList.Add(new MainObject(newMeteo, new Vector2(1, -1), new Vector3(x, y, 0f)));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(1, -1), new Vector3(x, y, 0f),0.025f, 2));
         else if (y >= 0 && t == 2)
-            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, -1), new Vector3(x, y, 0f)));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, -1), new Vector3(x, y, 0f), 0.025f, 2));
         else if (y < 0 && t == 1)
-            meteoList.Add(new MainObject(newMeteo, new Vector2(1, 1), new Vector3(x, y, 0f)));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(1, 1), new Vector3(x, y, 0f), 0.025f, 2));
         else
-            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, 1), new Vector3(x, y, 0f)));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, 1), new Vector3(x, y, 0f), 0.025f, 2));
     }
 
     void SpawnMeteo2()
@@ -219,13 +220,13 @@ public class newMeteo : MonoBehaviour {
         GameObject newMeteo = Instantiate(level2, new Vector3(x, y, 0f), Quaternion.identity);
         newMeteo.transform.parent = meteoPoolHolder;
         if (y >= 0 && t == 1)
-            meteoList.Add(new MainObject(newMeteo, new Vector2(1, -1), new Vector3(x, y, 0f)));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(1, -1), new Vector3(x, y, 0f),0.02f, 3));
         else if (y >= 0 && t == 2)
-            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, -1), new Vector3(x, y, 0f)));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, -1), new Vector3(x, y, 0f), 0.02f, 3));
         else if (y < 0 && t == 1)
-            meteoList.Add(new MainObject(newMeteo, new Vector2(1, 1), new Vector3(x, y, 0f)));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(1, 1), new Vector3(x, y, 0f), 0.02f, 3));
         else
-            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, 1), new Vector3(x, y, 0f)));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, 1), new Vector3(x, y, 0f), 0.02f, 3));
     }
 
     void SpawnMeteo3()
@@ -241,13 +242,13 @@ public class newMeteo : MonoBehaviour {
         GameObject newMeteo = Instantiate(level3, new Vector3(x, y, 0f), Quaternion.identity);
         newMeteo.transform.parent = meteoPoolHolder;
         if (y >= 0 && t == 1)
-            meteoList.Add(new MainObject(newMeteo, new Vector2(1, -1), new Vector3(x, y, 0f)));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(1, -1), new Vector3(x, y, 0f), 0.015f, 4));
         else if (y >= 0 && t == 2)
-            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, -1), new Vector3(x, y, 0f)));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, -1), new Vector3(x, y, 0f), 0.015f, 4));
         else if (y < 0 && t == 1)
-            meteoList.Add(new MainObject(newMeteo, new Vector2(1, 1), new Vector3(x, y, 0f)));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(1, 1), new Vector3(x, y, 0f), 0.015f, 4));
         else
-            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, 1), new Vector3(x, y, 0f)));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, 1), new Vector3(x, y, 0f), 0.015f, 4));
     }
 
     IEnumerator ReadyToStart()

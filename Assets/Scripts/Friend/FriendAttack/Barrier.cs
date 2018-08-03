@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CircleCollider2D))]
 public class Barrier : MonoBehaviour
 {
     public float Delay;
+    public float BarrierRadius;
+
+    SpriteRenderer barrierImage;
 
     FriendMover friendMover;
-    SpriteRenderer barrierImage;
-    CircleCollider2D barrierCollider;
 
     float elapsedTime;
     bool isTurnedOn;
@@ -19,40 +19,56 @@ public class Barrier : MonoBehaviour
         friendMover = GetComponentInParent<FriendMover>();
         barrierImage = GetComponent<SpriteRenderer>();
         barrierImage.enabled = false;
-        barrierCollider = GetComponent<CircleCollider2D>();
-        barrierCollider.enabled = false;
         
+        isTurnedOn = false;
+    }
+    private void OnEnable()
+    {
         elapsedTime = .0f;
+    }
+    private void OnDisable()
+    {
+        barrierImage.enabled = false;
         isTurnedOn = false;
     }
 
     private void Update()
     {
-        if (!friendMover.isMoving)
+        if (friendMover.state != FriendMover.eState.Moving)
             return;
 
-        if (!isTurnedOn)
+        if (isTurnedOn)
+        {
+            MainObject nearestMeteo = newMeteo.FindNearestMeteo(transform.position, BarrierRadius);
+            //if (nearestMeteo == null)
+            //    return;
+
+            // float nearestDistanceSqr = (transform.position - nearestMeteo.ballPos).sqrMagnitude;
+
+            if (nearestMeteo != null)
+            //if (nearestDistanceSqr <= BarrierRadius * BarrierRadius)
+            {
+                nearestMeteo.stone.GetComponent<CrushMeteo>().Crush();
+
+                barrierImage.enabled = false;
+                isTurnedOn = false;
+            }
+        }
+        else
         {
             if (Delay < elapsedTime)
             {
                 barrierImage.enabled = true;
-                barrierCollider.enabled = true;
                 isTurnedOn = true;
+                elapsedTime = .0f;
             }
             elapsedTime += Time.deltaTime;
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnDrawGizmosSelected()
     {
-        if (collision.tag == "meteo")
-        {
-            collision.GetComponent<CrushMeteo>().Crush();
-
-            barrierImage.enabled = false;
-            barrierCollider.enabled = false;
-            isTurnedOn = false;
-            elapsedTime = .0f;
-        }
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, BarrierRadius);
     }
 }

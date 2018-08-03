@@ -12,6 +12,7 @@ public class BombThrower : MonoBehaviour {
 
     private SpikeBomb spikeBomb;   // instance
     private FriendMover friendMover;
+
     private float elaspedTime;
 
     private void Awake()
@@ -28,7 +29,7 @@ public class BombThrower : MonoBehaviour {
 
     private void Update()
     {
-        if (!friendMover.isMoving)
+        if (friendMover.state != FriendMover.eState.Moving)
             return;
 
         elaspedTime += Time.deltaTime;

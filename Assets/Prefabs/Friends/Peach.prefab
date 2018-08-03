@@ -23,10 +23,25 @@ GameObject:
   - component: {fileID: 70108482582077606}
   - component: {fileID: 50720759758892558}
   - component: {fileID: 114697452102971944}
-  - component: {fileID: 114096051356507712}
   m_Layer: 0
   m_Name: Peach
   m_TagString: Friend
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1572537341929196
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4645437313387760}
+  - component: {fileID: 114467047228518764}
+  m_Layer: 0
+  m_Name: Weapon_StarShooter
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -38,10 +53,24 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1344979391021936}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2.5, y: -1.93, z: -0.31892583}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4645437313387760}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4645437313387760
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1572537341929196}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 4061541751747110}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &50720759758892558
@@ -79,17 +108,20 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: -0.11}
   m_Size: {x: 0.95, y: 1.15}
   m_Direction: 0
---- !u!114 &114096051356507712
+--- !u!114 &114467047228518764
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1344979391021936}
+  m_GameObject: {fileID: 1572537341929196}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: adcd34fa5f2da0649add52a1ead4e0ec, type: 3}
+  m_Script: {fileID: 11500000, guid: 56c7b9ef10faae1459780c6b71c06cef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  StarPrefab: {fileID: 1410165066940964, guid: ce07cec214f231640a5b86b19aa76144, type: 2}
+  ShotDelay: 1
+  ShotSpeed: 3
 --- !u!114 &114697452102971944
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -102,7 +134,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 0
-  isMoving: 0
+  indexFromHead: -1
+  state: 3
 --- !u!212 &212158667378393482
 SpriteRenderer:
   m_ObjectHideFlags: 1

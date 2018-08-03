@@ -34,27 +34,16 @@ public class HomingMissile : MonoBehaviour
         Transform parent = transform.parent;
         transform.parent = null;
 
+        Vector3 littleRigth = new Vector3(0.1f, 1f);
+
         while (!kaboom)
         {
-            float nearestSqr = Mathf.Infinity;
-            MainObject nearestMeteo = null;
-            // Find nearby meteo
-
-            if (newMeteo.meteoList.Count > 0)
-            {
-                foreach (MainObject meteo in newMeteo.meteoList)
-                {
-                    float distanceSqr = (meteo.ballPos - transform.position).sqrMagnitude;
-                    if (distanceSqr < nearestSqr)
-                    {
-                        nearestSqr = distanceSqr;
-                        nearestMeteo = meteo;
-                    }
-                }
-                targetPos = nearestMeteo.ballPos;
-            }
+            MainObject nearestMeteo = newMeteo.FindNearestMeteo(transform.position);
+            
+            if (nearestMeteo == null)
+                targetPos = transform.position + transform.rotation * littleRigth;
             else
-                targetPos = transform.position + aim;
+                targetPos = nearestMeteo.ballPos;
 
             aim = targetPos - transform.position;
 

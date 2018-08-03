@@ -10,7 +10,7 @@ public class LaserGun : MonoBehaviour
     public float Thickness;
     public float FadeOutValue;
 
-    static private int LaserNum = 4;
+    const int LaserNum = 4;
 
     GameObject[] lasers;
     Vector3[] lasersDirection;
@@ -25,6 +25,7 @@ public class LaserGun : MonoBehaviour
     }
 
     FriendMover friendMover;
+    Transform parent;
 
     float elapsedTime;
 
@@ -44,15 +45,21 @@ public class LaserGun : MonoBehaviour
         }
 
         friendMover = GetComponentInParent<FriendMover>();
+        parent = transform.parent;
+
         elapsedTime = .0f;
 
         laserColor = new Color(77.0f / 255, 255.0f / 255, 184.0f / 255);
         //SetLaserColor(new Color(77.0f/255, 255.0f/255, 184.0f/255));
     }
+    private void OnEnable()
+    {
+        elapsedTime = .0f;
+    }
 
     private void Update()
     {
-        if (!friendMover.isMoving)
+        if (friendMover.state != FriendMover.eState.Moving)
             return;
 
         if (ShotDelay <= elapsedTime)
@@ -71,7 +78,9 @@ public class LaserGun : MonoBehaviour
 
     IEnumerator Fire()
     {
-        Transform parent = transform;
+        //Transform parent = transform;
+        // Detach from Parent
+        transform.parent = null;
 
         float laserLength = 20.0f;
         float pixel2Unit = lasers[0].GetComponent<SpriteRenderer>().sprite.pixelsPerUnit / lasers[0].GetComponent<SpriteRenderer>().sprite.rect.width;
@@ -85,8 +94,6 @@ public class LaserGun : MonoBehaviour
                                                          lasers[i].transform.localScale.z);
             // Active
             lasers[i].SetActive(true);
-            // Detach from Parent
-            lasers[i].transform.parent = null;
         }
 
         float laserAlpha = 1.0f;
@@ -102,8 +109,10 @@ public class LaserGun : MonoBehaviour
         // Inactive all
         for (int i = 0; i < LaserNum; ++i)
         {
-            lasers[i].transform.parent = parent;
             lasers[i].SetActive(false);
         }
+
+        transform.parent = parent;
+        transform.position = parent.position;
     }
 }

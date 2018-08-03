@@ -103,30 +103,16 @@ public class LightningAttack : MonoBehaviour {
 
     IEnumerator AttackNearestWithBolt()
     {
-        while (true)
+        while (true) // TODO: 시간으로 바꿀까
         {
-            if (friendMover.isMoving)
+            if (friendMover.state == FriendMover.eState.Moving)
             {
-                float nearestSqr = Mathf.Infinity;
-                MainObject nearestMeteo = null;
-                // Find nearby meteo
-                foreach (MainObject meteo in newMeteo.meteoList)
-                {
-                    float distanceSqr = (meteo.ballPos - transform.position).sqrMagnitude;
-                    if (distanceSqr < nearestSqr)
-                    {
-                        nearestSqr = distanceSqr;
-                        nearestMeteo = meteo;
-                    }
-                }
-
-                // If the nearest meteo is in the attack range,
-                Vector3 AttackPoint = nearestMeteo.stone.transform.position;
-                if ((transform.position - AttackPoint).sqrMagnitude <= AttackRange * AttackRange)
+                MainObject nearestMeteo = newMeteo.FindNearestMeteo(transform.position, AttackRange);
+                if (nearestMeteo != null)
                 {
                     // Create a (pooled) bolt to nearest meteo
                     for (int i = 0; i < NumberOfBoltLine; i++)
-                        CreatePooledBolt(transform.position, AttackPoint, Color.white, Thickness);
+                        CreatePooledBolt(transform.position, nearestMeteo.stone.transform.position, Color.white, Thickness);
                     nearestMeteo.stone.GetComponent<CrushMeteo>().Crush();
                     yield return new WaitForSeconds(AttackDelayTime);
                 }

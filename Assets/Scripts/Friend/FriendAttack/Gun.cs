@@ -14,7 +14,9 @@ public class Gun : MonoBehaviour
 
     GameObject[] bullets;
     Vector3[] bulletsDirection;
+
     FriendMover friendMover;
+    Transform parent;
 
     float elapsedTime;
 
@@ -34,14 +36,18 @@ public class Gun : MonoBehaviour
         }
 
         friendMover = GetComponentInParent<FriendMover>();
-        elapsedTime = .0f;
+        parent = transform.parent;
 
         SetBulletColor(Color.yellow);
+    }
+    private void OnEnable()
+    {
+        elapsedTime = .0f;
     }
 
     private void Update()
     {
-        if (!friendMover.isMoving)
+        if (friendMover.state != FriendMover.eState.Moving)
             return;
 
         if (ShotDelay <= elapsedTime)
@@ -60,9 +66,11 @@ public class Gun : MonoBehaviour
 
     IEnumerator Fire()
     {
-        Transform parent = transform;
+        //Transform parent = transform;
+        // Detach from Parent
+        transform.parent = null;
 
-        float bulletLength = BulletSpeed * (100 / bullets[0].GetComponent<SpriteRenderer>().sprite.rect.width);
+        //float bulletLength = BulletSpeed * (100 / bullets[0].GetComponent<SpriteRenderer>().sprite.rect.width);
         float pixel2Unit = bullets[0].GetComponent<SpriteRenderer>().sprite.pixelsPerUnit / bullets[0].GetComponent<SpriteRenderer>().sprite.rect.width;
         for (int i = 0; i < BulletNum; ++i)
         {
@@ -74,8 +82,7 @@ public class Gun : MonoBehaviour
                                                          bullets[i].transform.localScale.z);
             // Active
             bullets[i].SetActive(true);
-            // Detach from Parent
-            bullets[i].transform.parent = null;
+            //bullets[i].transform.parent = null;
         }
 
         const float MaxRange = 20f;
@@ -96,8 +103,10 @@ public class Gun : MonoBehaviour
         // Inactive all
         for (int i = 0; i < BulletNum; ++i)
         {
-            bullets[i].transform.parent = parent;
+            //bullets[i].transform.parent = parent;
             bullets[i].SetActive(false);
         }
+        transform.parent = parent;
+        transform.position = parent.position;
     }
 }

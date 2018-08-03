@@ -34,7 +34,7 @@ public class CrushMagnet : MonoBehaviour
     {
         if (other.gameObject.tag.Equals("Friend")) // item <-> player
         {
-            if (other.gameObject.GetComponent<FriendMover>().isMoving)
+            if (other.gameObject.GetComponent<FriendMover>().state == FriendMover.eState.Moving)
             {
                 for (int i = 0; i < newItem.itemList.Count; i++)
                 {

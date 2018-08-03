@@ -30,15 +30,23 @@ public class newMeteo : MonoBehaviour {
     public static float period;
 
     // For pooling
-    public static List<MainObject> meteoList = new List<MainObject>(50); // active meteors
-    List<GameObject> InactiveMeteoLevel0;
-    int MaxNumOfMeteoLevel0 = 30;
     Transform meteoPoolHolder;
+    public static List<MainObject> meteoList = new List<MainObject>(); // active meteors
+
+    List<GameObject> InactiveMeteoLevel0;
+    List<GameObject> InactiveMeteoLevel1;
+    List<GameObject> InactiveMeteoLevel2;
+    List<GameObject> InactiveMeteoLevel3;
+    const int MaxNumOfMeteoLevel0 = 50;
+    const int MaxNumOfMeteoLevel1 = 30;
+    const int MaxNumOfMeteoLevel2 = 15;
+    const int MaxNumOfMeteoLevel3 = 5;
+
+    static float[] radiusOfMeteo = new float[4];
 
     private void Awake()
     {
-        //meteoList = new List<MainObject>(50);
-         meteoList = new List<MainObject>(50); // active meteors
+        meteoList = new List<MainObject>(); // active meteors
         period = 2.0f;
 
         Portal.gameObject.SetActive(false);
@@ -48,16 +56,58 @@ public class newMeteo : MonoBehaviour {
         meteoPoolHolder = GameObject.Find("MeteoPoolHolder").transform;
         if (meteoPoolHolder == null)
             meteoPoolHolder = (new GameObject("MeteoPoolHolder")).transform;
-
-        // Pre-Make Meteo Level 0
-        InactiveMeteoLevel0 = new List<GameObject>();
-        GameObject newMeteo = null;
-        for (int i = MaxNumOfMeteoLevel0; 0 < i; --i)
+        
+        // Pre-Make for Pooling
         {
-            newMeteo = Instantiate(level0);
-            newMeteo.transform.parent = meteoPoolHolder;
-            newMeteo.SetActive(false);
-            InactiveMeteoLevel0.Add(newMeteo);
+            // Pre-Make Meteo Level 0
+            InactiveMeteoLevel0 = new List<GameObject>();
+            GameObject newMeteo = null;
+            for (int i = MaxNumOfMeteoLevel0; 0 < i; --i)
+            {
+                newMeteo = Instantiate(level0);
+                newMeteo.transform.parent = meteoPoolHolder;
+                newMeteo.SetActive(false);
+                InactiveMeteoLevel0.Add(newMeteo);
+            }
+            // Pre-Make Meteo Level 1
+            InactiveMeteoLevel1 = new List<GameObject>();
+            for (int i = MaxNumOfMeteoLevel1; 0 < i; --i)
+            {
+                newMeteo = Instantiate(level1);
+                newMeteo.transform.parent = meteoPoolHolder;
+                newMeteo.SetActive(false);
+                InactiveMeteoLevel1.Add(newMeteo);
+            }
+            // Pre-Make Meteo Level 2
+            InactiveMeteoLevel2 = new List<GameObject>();
+            for (int i = MaxNumOfMeteoLevel2; 0 < i; --i)
+            {
+                newMeteo = Instantiate(level2);
+                newMeteo.transform.parent = meteoPoolHolder;
+                newMeteo.SetActive(false);
+                InactiveMeteoLevel2.Add(newMeteo);
+            }
+            // Pre-Make Meteo Level 1
+            InactiveMeteoLevel3 = new List<GameObject>();
+            for (int i = MaxNumOfMeteoLevel3; 0 < i; --i)
+            {
+                newMeteo = Instantiate(level3);
+                newMeteo.transform.parent = meteoPoolHolder;
+                newMeteo.SetActive(false);
+                InactiveMeteoLevel3.Add(newMeteo);
+            }
+        }
+
+        GameObject[] meteos = new GameObject[4] { level0, level1, level2, level3 };
+        for(int i=0; i<4; i++)
+        {
+            float scale = Mathf.Min(new float[]{
+                meteos[i].transform.localScale.x,
+                meteos[i].transform.localScale.y,
+                meteos[i].transform.localScale.z
+            });
+            radiusOfMeteo[i] = meteos[i].GetComponent<CircleCollider2D>().radius * scale;
+            print("meteo" + i + " : " + radiusOfMeteo[i]);
         }
     }
 
@@ -132,7 +182,6 @@ public class newMeteo : MonoBehaviour {
             yield return new WaitForSeconds(period);
         }
     }
-
     IEnumerator Meteo1_routine()
     {
         yield return new WaitForSeconds(20.0f);
@@ -175,36 +224,35 @@ public class newMeteo : MonoBehaviour {
         Vector2 position = Quaternion.Euler(.0f, .0f, Random.Range(.0f, 360.0f)) * Vector3.up * maxPos.magnitude;
 
         int lastIndex = InactiveMeteoLevel0.Count - 1;
+        if (lastIndex == -1)
+            return;
+
         GameObject newMeteo = InactiveMeteoLevel0[lastIndex];
         InactiveMeteoLevel0.RemoveAt(lastIndex);
 
         meteoList.Add(new MainObject(newMeteo, direction, position));
         newMeteo.SetActive(true);
 
-        newMeteo.transform.parent = meteoPoolHolder;
+        //newMeteo.transform.parent = meteoPoolHolder;
         CorrectPosition(meteoList.Count - 1);
     }
 
     void SpawnMeteo1()
     {
-        int t = Random.Range(1, 3);  // -6.8 ~ 5.8    // 1 or 2
-        y = Random.Range(minPos.x, maxPos.y);
+        Vector2 direction = Quaternion.Euler(.0f, .0f, Random.Range(.0f, 360.0f)) * Vector3.one;
+        Vector2 position = Quaternion.Euler(.0f, .0f, Random.Range(.0f, 360.0f)) * Vector3.up * maxPos.magnitude;
 
-        if (t == 1)
-            x = minPos.x;
-        else
-            x = maxPos.x;
+        int lastIndex = InactiveMeteoLevel1.Count - 1;
+        if (lastIndex == -1)
+            return;
 
-        GameObject newMeteo = Instantiate(level1, new Vector3(x, y, 0f), Quaternion.identity);
-        newMeteo.transform.parent = meteoPoolHolder;
-        if (y >= 0 && t == 1)
-            meteoList.Add(new MainObject(newMeteo, new Vector2(1, -1), new Vector3(x, y, 0f),0.025f, 2));
-        else if (y >= 0 && t == 2)
-            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, -1), new Vector3(x, y, 0f), 0.025f, 2));
-        else if (y < 0 && t == 1)
-            meteoList.Add(new MainObject(newMeteo, new Vector2(1, 1), new Vector3(x, y, 0f), 0.025f, 2));
-        else
-            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, 1), new Vector3(x, y, 0f), 0.025f, 2));
+        GameObject newMeteo = InactiveMeteoLevel1[lastIndex];
+        InactiveMeteoLevel1.RemoveAt(lastIndex);
+
+        meteoList.Add(new MainObject(newMeteo, direction, position));
+        newMeteo.SetActive(true);
+
+        CorrectPosition(meteoList.Count - 1);
     }
 
     void SpawnMeteo2()
@@ -220,13 +268,13 @@ public class newMeteo : MonoBehaviour {
         GameObject newMeteo = Instantiate(level2, new Vector3(x, y, 0f), Quaternion.identity);
         newMeteo.transform.parent = meteoPoolHolder;
         if (y >= 0 && t == 1)
-            meteoList.Add(new MainObject(newMeteo, new Vector2(1, -1), new Vector3(x, y, 0f),0.02f, 3));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(1, -1), new Vector3(x, y, 0f),0.02f, 3, 2));
         else if (y >= 0 && t == 2)
-            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, -1), new Vector3(x, y, 0f), 0.02f, 3));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, -1), new Vector3(x, y, 0f), 0.02f, 3, 2));
         else if (y < 0 && t == 1)
-            meteoList.Add(new MainObject(newMeteo, new Vector2(1, 1), new Vector3(x, y, 0f), 0.02f, 3));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(1, 1), new Vector3(x, y, 0f), 0.02f, 3, 2));
         else
-            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, 1), new Vector3(x, y, 0f), 0.02f, 3));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, 1), new Vector3(x, y, 0f), 0.02f, 3, 2));
     }
 
     void SpawnMeteo3()
@@ -242,13 +290,13 @@ public class newMeteo : MonoBehaviour {
         GameObject newMeteo = Instantiate(level3, new Vector3(x, y, 0f), Quaternion.identity);
         newMeteo.transform.parent = meteoPoolHolder;
         if (y >= 0 && t == 1)
-            meteoList.Add(new MainObject(newMeteo, new Vector2(1, -1), new Vector3(x, y, 0f), 0.015f, 4));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(1, -1), new Vector3(x, y, 0f), 0.015f, 4, 3));
         else if (y >= 0 && t == 2)
-            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, -1), new Vector3(x, y, 0f), 0.015f, 4));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, -1), new Vector3(x, y, 0f), 0.015f, 4, 3));
         else if (y < 0 && t == 1)
-            meteoList.Add(new MainObject(newMeteo, new Vector2(1, 1), new Vector3(x, y, 0f), 0.015f, 4));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(1, 1), new Vector3(x, y, 0f), 0.015f, 4, 3));
         else
-            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, 1), new Vector3(x, y, 0f), 0.015f, 4));
+            meteoList.Add(new MainObject(newMeteo, new Vector2(-1, 1), new Vector3(x, y, 0f), 0.015f, 4, 3));
     }
 
     IEnumerator ReadyToStart()
@@ -306,7 +354,14 @@ public class newMeteo : MonoBehaviour {
             if (meteoList[i].equal_Stone(meteo))
             {
                 meteoList[i].stone.SetActive(false);
-                InactiveMeteoLevel0.Add(meteoList[i].stone);
+                if (meteoList[i].level == 0)
+                    InactiveMeteoLevel0.Add(meteoList[i].stone);
+                else if (meteoList[i].level == 1)
+                    InactiveMeteoLevel1.Add(meteoList[i].stone);
+                else if (meteoList[i].level == 2)
+                    InactiveMeteoLevel2.Add(meteoList[i].stone);
+                else if (meteoList[i].level == 3)
+                    InactiveMeteoLevel3.Add(meteoList[i].stone);
                 meteoList.RemoveAt(i);
                 break;
             }
@@ -321,5 +376,24 @@ public class newMeteo : MonoBehaviour {
                 return mo;
         }
         return null;
+    }
+
+    public static MainObject FindNearestMeteo(Vector3 position, float maxRange = Mathf.Infinity)
+    {
+        float nearestDistance = maxRange;
+        MainObject nearestMeteo = null;
+
+        foreach (MainObject meteo in newMeteo.meteoList)
+        {
+            float meteoRadius = radiusOfMeteo[meteo.level];
+            float distance = (meteo.ballPos - position).magnitude - meteoRadius;
+            if (distance < nearestDistance)
+            {
+                nearestDistance = distance;
+                nearestMeteo = meteo;
+            }
+        }
+
+        return nearestMeteo;
     }
 }

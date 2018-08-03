@@ -6,9 +6,9 @@ public class FriendsManager : MonoBehaviour {
 
     [Header("private 인데 일단")]
     // For pooling
-    public List<GameObject> MovingFriends; // 꼬리 -> 머리 순서
-    public List<GameObject> FloatingFriends;
-    public List<GameObject> InActiveFriends;
+    public List<FriendMover> MovingFriends; // 꼬리 -> 머리 순서
+    public List<FriendMover> FloatingFriends;
+    public List<FriendMover> InActiveFriends;
     public LinkedList<Vector2> changeDirectionPoint; // 메모리 파편화 가능성? 나중에 자료구조를 직접 만들든가 해야
 
     [Space(10)]
@@ -26,9 +26,9 @@ public class FriendsManager : MonoBehaviour {
 
     private void Awake()
     {
-        MovingFriends = new List<GameObject>();
-        FloatingFriends = new List<GameObject>();
-        InActiveFriends = new List<GameObject>();
+        MovingFriends = new List<FriendMover>();
+        FloatingFriends = new List<FriendMover>();
+        InActiveFriends = new List<FriendMover>();
         changeDirectionPoint = new LinkedList<Vector2>();
 
         Transform friendPoolHolder = GameObject.Find("FriendPoolHolder").transform;
@@ -39,12 +39,13 @@ public class FriendsManager : MonoBehaviour {
         GameObject f = GameObject.Find("StartFriend");
         f.transform.parent = friendPoolHolder;
         FriendMover fm = f.GetComponent<FriendMover>();
-        fm.isMoving = true;
+        //fm.isMoving = true;
+        fm.state = FriendMover.eState.Moving;
         fm.indexFromHead = 0;
         fm.Speed = MovingSpeedAtStart;
         fm.CircleCenter = (Vector2)transform.position + Vector2.right * fm.Radius;
-
-        MovingFriends.Add(f);
+        
+        MovingFriends.Add(fm);
 
         // Pre-make objects to pool
         int NumberOfFriends = FriendsPrefab.Length;
@@ -55,8 +56,7 @@ public class FriendsManager : MonoBehaviour {
                 GameObject friend = Instantiate(FriendsPrefab[j]);
                 friend.transform.parent = friendPoolHolder;
                 friend.SetActive(false);
-                friend.GetComponent<FriendMover>().indexFromHead = -1;
-                InActiveFriends.Add(friend);
+                InActiveFriends.Add(friend.GetComponent<FriendMover>());
             }
         }
 
@@ -65,16 +65,19 @@ public class FriendsManager : MonoBehaviour {
 
         InvokeRepeating("SpawnFriends", 1.5f, 5.0f);
     }
+    private void OnDisable()
+    {
+        if (b_Crown == true)
+        {
+            b_Crown = false;
+            Crown.SetActive(false);
+        }
+    }
 
     private void Update()
     {
         //////////////////
         // Get input
-        if (Input.GetMouseButtonDown(0))
-        {
-            TextLog.Print("-Click at frame " + Time.frameCount);
-            ChangeDirection();
-        }
         if (0 < Input.touchCount)
         {
             if (Input.GetTouch(0).phase == TouchPhase.Began)
@@ -87,28 +90,35 @@ public class FriendsManager : MonoBehaviour {
             }
             else if (Input.GetTouch(0).phase == TouchPhase.Ended)
             {
-                TextLog.Print("-TouchEnd at frame " + Time.frameCount);
                 isTouching = false;
             }
         }
+        else if (Input.GetMouseButtonDown(0))
+        {
+            ChangeDirection();
+        }
 
+        UpdateFriends();
+    }
+    void UpdateFriends()
+    {
         ////////////////////
-        // Move Friends
+        // Check friend's state
         for (int i = MovingFriends.Count - 1; i >= 0; i--)
         {
-            MovingFriends[i].GetComponent<FriendMover>().MoveCircular();
+            if(MovingFriends[i].state == FriendMover.eState.Dead)
+            {
+                TextLog.Print("Dead:)l");
+                MovingFriends.RemoveAt(i);
+                InActiveFriends.Add(MovingFriends[i]);
+            }
         }
 
         //////////////////////
         // Remove the all-passed changeDirectionPoint
-        var dest = MovingFriends[0].GetComponent<FriendMover>().destination;
+        var dest = MovingFriends[0].destination;
         while (dest != changeDirectionPoint.First)
             changeDirectionPoint.RemoveFirst();
-
-
-        //둥실둥실
-        for (int i = 0; i < FloatingFriends.Count; i++)
-            FloatingFriends[i].transform.Rotate(0, 0, -0.5f);
 
         if (b_Crown)
             StartCoroutine("Crown_Effect");
@@ -116,7 +126,6 @@ public class FriendsManager : MonoBehaviour {
         if (b_Bullet)
             StartCoroutine("Bullet_Effect");
     }
-
     void SpawnFriends()
     {
         if (InActiveFriends.Count <= 0)
@@ -126,19 +135,20 @@ public class FriendsManager : MonoBehaviour {
         float y = Random.Range(-9.5f, 9.5f);
 
         int cha = Random.Range(0, InActiveFriends.Count - 1); //InActiveFriends.Count - 3;
-        GameObject newFriend = InActiveFriends[cha];
+        FriendMover newFriend = InActiveFriends[cha];
 
         InActiveFriends.RemoveAt(cha);
 
-        newFriend.SetActive(true);
+        newFriend.gameObject.SetActive(true);
         newFriend.transform.position = new Vector3(x, y);
+        newFriend.state = FriendMover.eState.Floating;
         FloatingFriends.Add(newFriend);
     }
 
     void ChangeDirection()
     {
         // Change direction of a Head of Friends
-        MovingFriends[MovingFriends.Count - 1].GetComponent<FriendMover>().ChangeDirection();
+        MovingFriends[MovingFriends.Count - 1].ChangeDirection();
 
         // Add current position to changeDirectionPoint
         if (MovingFriends.Count > 1)
@@ -149,13 +159,13 @@ public class FriendsManager : MonoBehaviour {
         // Set destination of the Tails
         for (int i = MovingFriends.Count - 2; i >= 0; i--)
         {
-            if (MovingFriends[i].GetComponent<FriendMover>().destination != null)
+            if (MovingFriends[i].destination != null)
                 break;
-            MovingFriends[i].GetComponent<FriendMover>().destination = changeDirectionPoint.Last;
+            MovingFriends[i].destination = changeDirectionPoint.Last;
         }
     }
 
-    public void AttachFriend(GameObject newFriend)
+    public void AttachFriend(FriendMover newFriend)
     {
         // Scoring
         ScoringManager.save_Score += 100;
@@ -164,7 +174,7 @@ public class FriendsManager : MonoBehaviour {
         FloatingFriends.Remove(newFriend);
 
         // MovingFriends에 넣고
-        FriendMover head = MovingFriends[MovingFriends.Count - 1].GetComponent<FriendMover>();
+        FriendMover head = MovingFriends[MovingFriends.Count - 1];
 
         float thetaAhead = DistanceBetweenFriends / head.Radius;
         if(head.IsClockwise)
@@ -179,30 +189,48 @@ public class FriendsManager : MonoBehaviour {
         );
         newFriend.transform.position = head.CircleCenter + centerToTarget;
         newFriend.transform.rotation = Quaternion.identity;
-        newFriend.GetComponent<FriendMover>().Speed = head.Speed;
-        newFriend.GetComponent<FriendMover>().isMoving = true;
-        newFriend.GetComponent<FriendMover>().indexFromHead = 0;
-        newFriend.GetComponent<FriendMover>().CircleCenter = head.CircleCenter;
-        newFriend.GetComponent<FriendMover>().IsClockwise = head.IsClockwise;
-        MovingFriends.Add(newFriend);
+        FriendMover newFriendMover = newFriend.GetComponent<FriendMover>();
+        newFriendMover.Speed = head.Speed;
+        newFriendMover.state = FriendMover.eState.Moving;
+        newFriendMover.indexFromHead = 0;
+        newFriendMover.CircleCenter = head.CircleCenter;
+        newFriendMover.IsClockwise = head.IsClockwise;
+        MovingFriends.Add(newFriendMover);
 
         for(int i = MovingFriends.Count-2; 0 <= i; --i)
         {
-            MovingFriends[i].GetComponent<FriendMover>().indexFromHead++;
+            MovingFriends[i].indexFromHead++;
         }
     }
 
-    public void DetachFriend(GameObject oldFriend)
+    public void AttackedAt(FriendMover attackedFriend)
     {
-        int idx = MovingFriends.IndexOf(oldFriend);
-        for(int i=idx; 0 <= i; --i)
+        // 한마리만 남았을떄
+        if (MovingFriends.Count == 1)
         {
-            MovingFriends[i].GetComponent<FriendMover>().isMoving = false;
-            MovingFriends[i].GetComponent<FriendMover>().indexFromHead = -1;
-            MovingFriends[i].SetActive(false);
-            InActiveFriends.Add(MovingFriends[i]);
+            GameObject.Find("FriendPoolHolder").SetActive(false);
+            score_Panel.SetActive(true);
+            GameObject.Find("GameManager").SetActive(false);
         }
-        MovingFriends.RemoveRange(0, idx + 1);
+        // 두마리 이상
+        else
+        {
+            int idx = -1;
+            if (attackedFriend.indexFromHead == 0) // 내가 머리인 경우
+                idx = MovingFriends.Count - 2;
+            else
+                idx = MovingFriends.IndexOf(attackedFriend);
+
+            for (int i = idx; 0 <= i; --i)
+            {
+                MovingFriends[i].Die();
+                //StartCoroutine(WaitForDying(MovingFriends[i]));
+            }
+            for (int i = idx+1; i < MovingFriends.Count; ++i)
+                MovingFriends[i].Flicker(3.0f);
+            //MovingFriends.RemoveRange(0, idx + 1);
+
+        }
     }
 
     IEnumerator Crown_Effect()

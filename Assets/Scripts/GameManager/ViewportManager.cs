@@ -7,13 +7,13 @@ public class ViewportManager : MonoBehaviour {
     public float Width;
     public float Height;
 
-    [HideInInspector] public Vector2 upperLeft;
-    [HideInInspector] public Vector2 bottomRight;
+    [HideInInspector] public static Vector2 upperLeft;
+    [HideInInspector] public static Vector2 bottomRight;
 
-    [HideInInspector] public float Left;
-    [HideInInspector] public float Right;
-    [HideInInspector] public float Up;
-    [HideInInspector] public float Down;
+    [HideInInspector] public static float Left;
+    [HideInInspector] public static float Right;
+    [HideInInspector] public static float Up;
+    [HideInInspector] public static float Down;
 
     private void Awake()
     {

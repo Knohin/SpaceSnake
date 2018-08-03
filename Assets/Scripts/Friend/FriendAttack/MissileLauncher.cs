@@ -28,7 +28,7 @@ public class MissileLauncher : MonoBehaviour {
 
     private void Update()
     {
-        if (!friendMover.isMoving)
+        if (friendMover.state != FriendMover.eState.Moving)
             return;
 
         if (ShotDelay <= elapsedTime)

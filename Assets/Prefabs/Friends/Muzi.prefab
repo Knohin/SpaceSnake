@@ -39,7 +39,6 @@ GameObject:
   - component: {fileID: 70879751335409160}
   - component: {fileID: 50212598092356080}
   - component: {fileID: 114117898572252610}
-  - component: {fileID: 114192714149919432}
   m_Layer: 0
   m_Name: Muzi
   m_TagString: Friend
@@ -67,7 +66,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1324922782122630}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.35, y: 3.08, z: -0.31892583}
+  m_LocalPosition: {x: -7.88, y: -7.49, z: -0.31892583}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4073855587372176}
@@ -122,17 +121,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 0
   isMoving: 0
---- !u!114 &114192714149919432
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1324922782122630}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: adcd34fa5f2da0649add52a1ead4e0ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  indexFromHead: -1
 --- !u!114 &114623777124783092
 MonoBehaviour:
   m_ObjectHideFlags: 1

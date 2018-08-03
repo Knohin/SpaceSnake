@@ -14,7 +14,7 @@ public class CrushMeteo : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        //if(other.gameObject.tag.Equals("Friend")) // meteo <-> player
+        //if(other.gameObject.tag.Equals("Friend")) // meteo <-> player // 이부분은 FriendCollider에서 처리한다
         //{
         //    if (other.GetComponent<FriendMover>().isMoving)
         //    {

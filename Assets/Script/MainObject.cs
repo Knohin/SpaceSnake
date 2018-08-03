@@ -14,6 +14,8 @@ public class MainObject
     public int health;
     public bool b_Blackhole;
 
+    public int level=0;
+
     public MainObject()
     {
         stone = null;
@@ -37,9 +39,8 @@ public class MainObject
         ballPos = pos;
         health = 1;
         b_Blackhole = false;
-
     }
-    public MainObject(GameObject obj, Vector2 direction, Vector3 pos, float speed, int hp = 1)
+    public MainObject(GameObject obj, Vector2 direction, Vector3 pos, float speed, int hp=1, int _level=0)
     {
         stone = obj;
         moveValue = direction;
@@ -48,6 +49,7 @@ public class MainObject
         health = hp;
         b_Blackhole = false;
 
+        level = _level;
     }
     public bool equal_Stone(GameObject obj)
     {

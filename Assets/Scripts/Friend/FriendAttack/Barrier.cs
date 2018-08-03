@@ -8,6 +8,7 @@ public class Barrier : MonoBehaviour
     public float BarrierRadius;
 
     SpriteRenderer barrierImage;
+    AudioSource audio;
 
     FriendMover friendMover;
 
@@ -19,6 +20,8 @@ public class Barrier : MonoBehaviour
         friendMover = GetComponentInParent<FriendMover>();
         barrierImage = GetComponent<SpriteRenderer>();
         barrierImage.enabled = false;
+
+        audio = GetComponent<AudioSource>();
         
         isTurnedOn = false;
     }
@@ -60,6 +63,7 @@ public class Barrier : MonoBehaviour
             {
                 barrierImage.enabled = true;
                 isTurnedOn = true;
+                audio.Play();
                 elapsedTime = .0f;
             }
             elapsedTime += Time.deltaTime;

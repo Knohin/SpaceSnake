@@ -6,9 +6,7 @@ public class CrushItem : MonoBehaviour {
 
     //private FriendsManager friendsManager;
     
-    // Use this for initialization
     void Start () {
-
         //friendsManager = GameObject.Find("GameManager").GetComponent<FriendsManager>();
     }
     
@@ -26,12 +24,12 @@ public class CrushItem : MonoBehaviour {
                         {
                             //Debug.Log("Crown");
                             // start에 코루틴 키고 bool 로 조정?
-                            FriendsManager.b_Crown = true;
+                            Item_Effect.b_Crown = true;
                         }
                         else // bullet
                         {
                             //Debug.Log("Bullet");
-                            FriendsManager.b_Bullet = true;
+                            Item_Effect.b_Bullet = true;
                         }
                         Item_Sound.item.Play();
                         newItem.itemList.RemoveAt(i);

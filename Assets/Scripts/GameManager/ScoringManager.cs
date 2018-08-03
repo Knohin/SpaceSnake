@@ -23,7 +23,7 @@ public class ScoringManager : MonoBehaviour {
 
     private void Update()
     {
-        time_Score += Time.deltaTime * 100;
+        time_Score += Time.deltaTime * 50;
 
         score = save_Score + meteo_Score + time_Score;
 

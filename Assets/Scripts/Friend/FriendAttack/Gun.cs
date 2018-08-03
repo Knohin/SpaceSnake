@@ -17,7 +17,7 @@ public class Gun : MonoBehaviour
 
     FriendMover friendMover;
     Transform parent;
-
+    AudioSource audio;
     float elapsedTime;
 
     private void Awake()
@@ -38,6 +38,8 @@ public class Gun : MonoBehaviour
         friendMover = GetComponentInParent<FriendMover>();
         parent = transform.parent;
 
+        audio = GetComponent<AudioSource>();
+
         SetBulletColor(Color.yellow);
     }
     private void OnEnable()
@@ -53,6 +55,7 @@ public class Gun : MonoBehaviour
         if (ShotDelay <= elapsedTime)
         {
             StartCoroutine(Fire());
+            audio.Play();
             elapsedTime = .0f;
         }
         elapsedTime += Time.deltaTime;
@@ -66,11 +69,8 @@ public class Gun : MonoBehaviour
 
     IEnumerator Fire()
     {
-        //Transform parent = transform;
-        // Detach from Parent
-        transform.parent = null;
+        Transform parent = transform;
 
-        //float bulletLength = BulletSpeed * (100 / bullets[0].GetComponent<SpriteRenderer>().sprite.rect.width);
         float pixel2Unit = bullets[0].GetComponent<SpriteRenderer>().sprite.pixelsPerUnit / bullets[0].GetComponent<SpriteRenderer>().sprite.rect.width;
         for (int i = 0; i < BulletNum; ++i)
         {
@@ -82,7 +82,7 @@ public class Gun : MonoBehaviour
                                                          bullets[i].transform.localScale.z);
             // Active
             bullets[i].SetActive(true);
-            //bullets[i].transform.parent = null;
+            bullets[i].transform.parent = null;
         }
 
         const float MaxRange = 20f;
@@ -103,10 +103,8 @@ public class Gun : MonoBehaviour
         // Inactive all
         for (int i = 0; i < BulletNum; ++i)
         {
-            //bullets[i].transform.parent = parent;
+            bullets[i].transform.parent = parent;
             bullets[i].SetActive(false);
         }
-        transform.parent = parent;
-        transform.position = parent.position;
     }
 }

@@ -20,6 +20,7 @@ public class LightningAttack : MonoBehaviour {
     //newMeteo meteoManager;
 
     FriendMover friendMover;
+    AudioSource audio;
 
     void Awake ()
     {
@@ -43,6 +44,8 @@ public class LightningAttack : MonoBehaviour {
             // Store in our inactive list
             inactiveBoltsObj.Add(bolt);
         }
+
+        audio = GetComponent<AudioSource>();
     }
     private void Start()
     {
@@ -113,6 +116,7 @@ public class LightningAttack : MonoBehaviour {
                     // Create a (pooled) bolt to nearest meteo
                     for (int i = 0; i < NumberOfBoltLine; i++)
                         CreatePooledBolt(transform.position, nearestMeteo.stone.transform.position, Color.white, Thickness);
+                    audio.Play();
                     nearestMeteo.stone.GetComponent<CrushMeteo>().Crush();
                     yield return new WaitForSeconds(AttackDelayTime);
                 }

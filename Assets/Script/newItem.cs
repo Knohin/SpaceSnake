@@ -13,44 +13,50 @@ public class newItem : MonoBehaviour
     public GameObject magnet;
     public GameObject crown;
     public GameObject bullet;
-
-    void SpawnItem()
+    IEnumerator SpawnItem()
     {
-        float x = Random.Range(-5.2f, 5.2f);
-        float y = Random.Range(-9.2f, 9.2f);
+        yield return new WaitForSeconds(7.0f);
 
-        int cha = Random.Range(1, 2); // 1 ~ 6 -> 1 -> 무적, 2, 3, 4 -> 총알, 5,6 -> 터뜨리기
-
-        if (cha == 1)
+        while (true)
         {
-            itemList.Add(new MainObject(Instantiate(crown, new Vector3(x, y, 0f), Quaternion.identity), new Vector2(1, -1), new Vector3(x, y, 0f), 0.02f));
-        }
-        else if (cha == 2 || cha == 3 || cha == 4)
-        {
-            itemList.Add(new MainObject(Instantiate(bullet, new Vector3(x, y, 0f), Quaternion.identity), new Vector2(-1, -1), new Vector3(x, y, 0f), 0.02f));
+            if (itemList.Count < 2)
+            {
+                yield return new WaitForSeconds(5.0f);
 
-        }
-        else
-        {
-            itemList.Add(new MainObject(Instantiate(magnet, new Vector3(x, y, 0f), Quaternion.identity), new Vector2(1, 1), new Vector3(x, y, 0f), 0.02f));
-        }
+                float x = Random.Range(-5.2f, 5.2f);
+                float y = Random.Range(-9.2f, 9.2f);
 
+                int cha = Random.Range(1, 7); // 1 ~ 6 -> 1 -> 무적, 2, 3, 4 -> 총알, 5,6 -> 터뜨리기
+
+                if (cha == 1)
+                {
+                    itemList.Add(new MainObject(Instantiate(crown, new Vector3(x, y, 0f), Quaternion.identity), new Vector2(1, -1), new Vector3(x, y, 0f), 0.02f));
+                }
+                else if (cha == 2 || cha == 3 || cha == 4)
+                {
+                    itemList.Add(new MainObject(Instantiate(bullet, new Vector3(x, y, 0f), Quaternion.identity), new Vector2(-1, -1), new Vector3(x, y, 0f), 0.02f));
+
+                }
+                else
+                {
+                    itemList.Add(new MainObject(Instantiate(magnet, new Vector3(x, y, 0f), Quaternion.identity), new Vector2(1, 1), new Vector3(x, y, 0f), 0.02f));
+                }
+
+                yield return new WaitForSeconds(10.0f);
+            }
+        }
     }
-    // Use this for initialization
+
     void Start()
     {
-        itemList = new List<MainObject>(30);
-        InvokeRepeating("SpawnItem", 14.5f, 10);
+        itemList = new List<MainObject>(5);
+        StartCoroutine(SpawnItem());
     }
 
-    // Update is called once per frame
     void Update()
     {
-
         for (int i = 0; i < itemList.Count; i++)
         {
-            //Vector3 n1 = itemList[i].stone.transform.position;
-
             itemList[i].ballPos.x += itemList[i].moveSpeed * itemList[i].moveValue.x;
             itemList[i].ballPos.y += itemList[i].moveSpeed * itemList[i].moveValue.y;
 
@@ -79,7 +85,6 @@ public class newItem : MonoBehaviour
 
             }
 
-            //itemList[i].stone.transform.Rotate(0, 0, 5.0f);
             itemList[i].stone.transform.position = itemList[i].ballPos;
         }
     }

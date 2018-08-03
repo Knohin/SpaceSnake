@@ -13,6 +13,8 @@ public class BombThrower : MonoBehaviour {
     private SpikeBomb spikeBomb;   // instance
     private FriendMover friendMover;
 
+    AudioSource audio;
+
     private float elaspedTime;
 
     private void Awake()
@@ -21,6 +23,8 @@ public class BombThrower : MonoBehaviour {
         spikeBomb = Instantiate(SpikeBombPrefab).GetComponent<SpikeBomb>();
         spikeBomb.transform.parent = transform;
         spikeBomb.gameObject.SetActive(false);
+
+        audio = GetComponent<AudioSource>();
     }
     private void OnEnable()
     {
@@ -38,8 +42,11 @@ public class BombThrower : MonoBehaviour {
         {
             elaspedTime -= AttackDelay;
 
-            if(!spikeBomb.isActiveAndEnabled)
-                ThrowObject(); 
+            if (!spikeBomb.isActiveAndEnabled)
+            {
+                ThrowObject();
+                audio.PlayDelayed(1.0f);
+            }
         }
     }
 

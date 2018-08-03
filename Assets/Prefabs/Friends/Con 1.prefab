@@ -90,8 +90,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 0
-  isMoving: 0
   indexFromHead: -1
+  health: 1
+  state: 3
 --- !u!212 &212463775471658264
 SpriteRenderer:
   m_ObjectHideFlags: 1

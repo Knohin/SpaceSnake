@@ -107,7 +107,6 @@ public class newMeteo : MonoBehaviour {
                 meteos[i].transform.localScale.z
             });
             radiusOfMeteo[i] = meteos[i].GetComponent<CircleCollider2D>().radius * scale;
-            print("meteo" + i + " : " + radiusOfMeteo[i]);
         }
     }
 
@@ -119,8 +118,11 @@ public class newMeteo : MonoBehaviour {
         Invoke("SpawnMeteo", 1.5f);
         Invoke("SpawnMeteo", 1.5f);
 
-        if(level0Active)
+        if (level0Active)
+        {
             StartCoroutine("Meteo_routine");
+            StartCoroutine("Meteo_routine");
+        }
         if (level1Active)
             StartCoroutine("Meteo1_routine");
         if (level2Active)
@@ -135,7 +137,7 @@ public class newMeteo : MonoBehaviour {
     void Update()
     {
         // 난이도 조절
-        if (period > 0.2f)
+        if (period > 0.3f)
             period -= 0.0005f;
 
         for (int i = 0; i < meteoList.Count; i++)
@@ -249,7 +251,7 @@ public class newMeteo : MonoBehaviour {
         GameObject newMeteo = InactiveMeteoLevel1[lastIndex];
         InactiveMeteoLevel1.RemoveAt(lastIndex);
 
-        meteoList.Add(new MainObject(newMeteo, direction, position));
+        meteoList.Add(new MainObject(newMeteo, direction, position, 0.025f,2,1));
         newMeteo.SetActive(true);
 
         CorrectPosition(meteoList.Count - 1);

@@ -13,6 +13,7 @@ public class MissileLauncher : MonoBehaviour {
     GameObject missile;
 
     FriendMover friendMover;
+    AudioSource audio;
 
     float elapsedTime;
 
@@ -23,6 +24,8 @@ public class MissileLauncher : MonoBehaviour {
         missile.transform.parent = transform;
 
         friendMover = GetComponentInParent<FriendMover>();
+        audio = GetComponent<AudioSource>();
+
         elapsedTime = .0f;
     }
 
@@ -34,6 +37,7 @@ public class MissileLauncher : MonoBehaviour {
         if (ShotDelay <= elapsedTime)
         {
             StartCoroutine(Launch());
+            audio.Play();
             elapsedTime = .0f;
         }
 

@@ -15,14 +15,12 @@ public class CrushPortal : MonoBehaviour {
     {
         eff.gameObject.SetActive(true);
         eff.transform.position = new Vector3(pos.x, pos.y, 0);
-        yield return new WaitForSeconds(0.05f);
+        yield return new WaitForSeconds(0.03f);
         eff.gameObject.SetActive(false);
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        //Debug.Log("Portal");
-
         if(other.gameObject.tag.Equals("meteo"))
         {
             for(int i = 0; i < newMeteo.meteoList.Count; i++)
@@ -36,10 +34,6 @@ public class CrushPortal : MonoBehaviour {
                     newMeteo.meteoList[i].ballPos = new Vector3(x, y, 0);
                 }
             }
-        }
-        else if(other.gameObject.tag.Equals("Player"))
-        {
-            
         }
     }
 }

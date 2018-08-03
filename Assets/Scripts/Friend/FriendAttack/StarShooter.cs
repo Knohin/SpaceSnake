@@ -9,10 +9,12 @@ public class StarShooter : MonoBehaviour {
     public float ShotDelay;
     public float ShotSpeed;
 
-    const int MaxNumOfStar = 3;
+    const int MaxNumOfStar = 4;
     List<GameObject> stars;
 
     private FriendMover friendMover;
+    AudioSource audio;
+
     private float elaspedTime;
 
     private void Awake()
@@ -27,6 +29,7 @@ public class StarShooter : MonoBehaviour {
         }
 
         friendMover = GetComponentInParent<FriendMover>();
+        audio = GetComponent<AudioSource>();
     }
     private void OnEnable()
     {
@@ -56,6 +59,7 @@ public class StarShooter : MonoBehaviour {
                 return;
 
             StartCoroutine(Shot(remainStar));
+            audio.Play();
             elaspedTime = 0;
         }
     }
@@ -73,6 +77,7 @@ public class StarShooter : MonoBehaviour {
         while (moved < 9.0f)
         {
             star.transform.position += dir * ShotSpeed * Time.deltaTime;
+            star.transform.rotation *= Quaternion.Euler(0, 0, 5.0f);
 
             moved += ShotSpeed * Time.deltaTime;
             yield return null;

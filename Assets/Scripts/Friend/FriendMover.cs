@@ -7,10 +7,8 @@ public class FriendMover : MonoBehaviour
     [HideInInspector] public float Speed;
 
     [HideInInspector] public LinkedListNode<Vector2> destination = null;
-    //[HideInInspector] public bool isMoving = false;
     [HideInInspector] public int indexFromHead = -1; // 이거 넣으면 사실상 위에 있는 변수(isMoving)는 필요가 없음
-    //[HideInInspector] public bool isDying = false;
-    //[HideInInspector] public bool isDead = false;
+    [HideInInspector] public int health = 1;
 
     public enum eState
     {
@@ -35,6 +33,13 @@ public class FriendMover : MonoBehaviour
     private void Awake()
     {
         friendsManager = GameObject.Find("GameManager").GetComponent<FriendsManager>();
+    }
+    private void OnEnable()
+    {
+        if (gameObject.name == "Con 1(Clone)")
+            health = 2;
+        else
+            health = 1;
     }
 
     private void OnDisable()
@@ -139,7 +144,7 @@ public class FriendMover : MonoBehaviour
             if (state == eState.Moving && !isWounded)
             {
                 collision.GetComponent<CrushMeteo>().Crush();
-                if (FriendsManager.b_Crown)
+                if (Item_Effect.b_Crown)
                     return;
                 else
                     //Die();
@@ -162,7 +167,6 @@ public class FriendMover : MonoBehaviour
         float randomX = Random.Range(-1f, 1f);
         Vector3 velocity = new Vector3(randomX, 4.0f);
         Quaternion angularVel = Quaternion.Euler(0, 0, randomX*2);
-        print(gameObject.name + " : " + velocity);
 
         state = eState.Dying;
 

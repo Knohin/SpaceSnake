@@ -25,6 +25,8 @@ public class LaserGun : MonoBehaviour
     }
 
     FriendMover friendMover;
+    AudioSource audio;
+
     Transform parent;
 
     float elapsedTime;
@@ -46,6 +48,7 @@ public class LaserGun : MonoBehaviour
 
         friendMover = GetComponentInParent<FriendMover>();
         parent = transform.parent;
+        audio = GetComponent<AudioSource>();
 
         elapsedTime = .0f;
 
@@ -65,6 +68,7 @@ public class LaserGun : MonoBehaviour
         if (ShotDelay <= elapsedTime)
         {
             StartCoroutine(Fire());
+            audio.Play();
             elapsedTime = .0f;
         }
         elapsedTime += Time.deltaTime;
@@ -78,9 +82,7 @@ public class LaserGun : MonoBehaviour
 
     IEnumerator Fire()
     {
-        //Transform parent = transform;
-        // Detach from Parent
-        transform.parent = null;
+        Transform parent = transform;
 
         float laserLength = 20.0f;
         float pixel2Unit = lasers[0].GetComponent<SpriteRenderer>().sprite.pixelsPerUnit / lasers[0].GetComponent<SpriteRenderer>().sprite.rect.width;
@@ -94,6 +96,7 @@ public class LaserGun : MonoBehaviour
                                                          lasers[i].transform.localScale.z);
             // Active
             lasers[i].SetActive(true);
+            lasers[i].transform.parent = null;
         }
 
         float laserAlpha = 1.0f;
@@ -110,9 +113,7 @@ public class LaserGun : MonoBehaviour
         for (int i = 0; i < LaserNum; ++i)
         {
             lasers[i].SetActive(false);
+            lasers[i].transform.parent = parent;
         }
-
-        transform.parent = parent;
-        transform.position = parent.position;
     }
 }

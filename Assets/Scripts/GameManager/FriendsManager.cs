@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FriendsManager : MonoBehaviour {
+public class FriendsManager : MonoBehaviour
+{
 
     [Header("private 인데 일단")]
     // For pooling
@@ -17,10 +18,7 @@ public class FriendsManager : MonoBehaviour {
     [Space(10)]
     public GameObject[] FriendsPrefab;
 
-    public GameObject Crown;
     public GameObject score_Panel;
-    public static bool b_Crown;
-    public static bool b_Bullet;
 
     bool isTouching = false;
 
@@ -44,14 +42,14 @@ public class FriendsManager : MonoBehaviour {
         fm.indexFromHead = 0;
         fm.Speed = MovingSpeedAtStart;
         fm.CircleCenter = (Vector2)transform.position + Vector2.right * fm.Radius;
-        
+
         MovingFriends.Add(fm);
 
         // Pre-make objects to pool
         int NumberOfFriends = FriendsPrefab.Length;
         for (int i = 50 / NumberOfFriends; 0 < i; i--)
         {
-            for(int j = NumberOfFriends-1; 0 <= j; j--)
+            for (int j = NumberOfFriends - 1; 0 <= j; j--)
             {
                 GameObject friend = Instantiate(FriendsPrefab[j]);
                 friend.transform.parent = friendPoolHolder;
@@ -60,18 +58,7 @@ public class FriendsManager : MonoBehaviour {
             }
         }
 
-        //Crown
-        Crown.SetActive(false);
-
         InvokeRepeating("SpawnFriends", 1.5f, 5.0f);
-    }
-    private void OnDisable()
-    {
-        if (b_Crown == true)
-        {
-            b_Crown = false;
-            Crown.SetActive(false);
-        }
     }
 
     private void Update()
@@ -82,7 +69,6 @@ public class FriendsManager : MonoBehaviour {
         {
             if (Input.GetTouch(0).phase == TouchPhase.Began)
             {
-                TextLog.Print("-Touch at frame " + Time.frameCount);
                 if (!isTouching)
                     ChangeDirection();
 
@@ -106,9 +92,8 @@ public class FriendsManager : MonoBehaviour {
         // Check friend's state
         for (int i = MovingFriends.Count - 1; i >= 0; i--)
         {
-            if(MovingFriends[i].state == FriendMover.eState.Dead)
+            if (MovingFriends[i].state == FriendMover.eState.Dead)
             {
-                TextLog.Print("Dead:)l");
                 MovingFriends.RemoveAt(i);
                 InActiveFriends.Add(MovingFriends[i]);
             }
@@ -119,20 +104,14 @@ public class FriendsManager : MonoBehaviour {
         var dest = MovingFriends[0].destination;
         while (dest != changeDirectionPoint.First)
             changeDirectionPoint.RemoveFirst();
-
-        if (b_Crown)
-            StartCoroutine("Crown_Effect");
-
-        if (b_Bullet)
-            StartCoroutine("Bullet_Effect");
     }
     void SpawnFriends()
     {
         if (InActiveFriends.Count <= 0)
             return;
 
-        float x = Random.Range(-5.5f, 5.5f);
-        float y = Random.Range(-9.5f, 9.5f);
+        float x = Random.Range(-5f, 5f);
+        float y = Random.Range(-9f, 9f);
 
         int cha = Random.Range(0, InActiveFriends.Count - 1); //InActiveFriends.Count - 3;
         FriendMover newFriend = InActiveFriends[cha];
@@ -177,7 +156,7 @@ public class FriendsManager : MonoBehaviour {
         FriendMover head = MovingFriends[MovingFriends.Count - 1];
 
         float thetaAhead = DistanceBetweenFriends / head.Radius;
-        if(head.IsClockwise)
+        if (head.IsClockwise)
         {
             thetaAhead *= -1.0f;
         }
@@ -197,7 +176,7 @@ public class FriendsManager : MonoBehaviour {
         newFriendMover.IsClockwise = head.IsClockwise;
         MovingFriends.Add(newFriendMover);
 
-        for(int i = MovingFriends.Count-2; 0 <= i; --i)
+        for (int i = MovingFriends.Count - 2; 0 <= i; --i)
         {
             MovingFriends[i].indexFromHead++;
         }
@@ -205,9 +184,14 @@ public class FriendsManager : MonoBehaviour {
 
     public void AttackedAt(FriendMover attackedFriend)
     {
-        // 한마리만 남았을떄
+        // 한마리만 남았을떄 
         if (MovingFriends.Count == 1)
         {
+            if (attackedFriend.health > 1)
+            {
+                attackedFriend.health--;
+                return;
+            }
             GameObject.Find("FriendPoolHolder").SetActive(false);
             score_Panel.SetActive(true);
             GameObject.Find("GameManager").SetActive(false);
@@ -217,7 +201,14 @@ public class FriendsManager : MonoBehaviour {
         {
             int idx = -1;
             if (attackedFriend.indexFromHead == 0) // 내가 머리인 경우
+            {
+                if (attackedFriend.health > 1)
+                {
+                    attackedFriend.health--;
+                    return;
+                }
                 idx = MovingFriends.Count - 2;
+            }
             else
                 idx = MovingFriends.IndexOf(attackedFriend);
 
@@ -226,33 +217,10 @@ public class FriendsManager : MonoBehaviour {
                 MovingFriends[i].Die();
                 //StartCoroutine(WaitForDying(MovingFriends[i]));
             }
-            for (int i = idx+1; i < MovingFriends.Count; ++i)
-                MovingFriends[i].Flicker(3.0f);
+            for (int i = idx + 1; i < MovingFriends.Count; ++i)
+                MovingFriends[i].Flicker(2.0f);
             //MovingFriends.RemoveRange(0, idx + 1);
-
         }
-    }
-
-    IEnumerator Crown_Effect()
-    {
-        Vector3 nv = MovingFriends[MovingFriends.Count - 1].transform.position + new Vector3(-0.1f, 1.15f, 0f);
-
-        Crown.transform.position = nv;
-
-        if (!Crown.activeSelf)
-        {
-            TextLog.Print("Crown");
-            Crown.SetActive(true);
-            yield return new WaitForSeconds(3.0f);
-            b_Crown = false;
-            Crown.SetActive(false);
-        }
-    }
-
-    IEnumerator Bullet_Effect()
-    {
-        // 총알 주기 or 파워
-        yield return new WaitForSeconds(3.0f);
-        b_Bullet = false;
     }
 }
+    

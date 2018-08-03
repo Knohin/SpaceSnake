@@ -30,7 +30,7 @@ public class CrushMeteo : MonoBehaviour {
         if (meteo == null)
             return;
 
-        ScoringManager.meteo_Score += 100;
+        ScoringManager.meteo_Score += 50;
         /// health 줄이고
         meteo.health--;
 

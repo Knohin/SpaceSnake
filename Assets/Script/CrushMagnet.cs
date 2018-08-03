@@ -67,7 +67,7 @@ public class CrushMagnet : MonoBehaviour
         Black_Hole.SetActive(true);
         active_Hole = true;
 
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(3.5f);
         Black_Hole.SetActive(false);
         active_Hole = false;
 

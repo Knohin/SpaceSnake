@@ -20,7 +20,7 @@ public class LightningAttack : MonoBehaviour {
     //newMeteo meteoManager;
 
     FriendMover friendMover;
-    AudioSource audio;
+    new AudioSource audio;
 
     void Awake ()
     {

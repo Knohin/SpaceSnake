@@ -20,9 +20,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4325041257946166}
   - component: {fileID: 212595375558165846}
-  - component: {fileID: 114729285720964310}
-  - component: {fileID: 60506918656935234}
+  - component: {fileID: 58784964436287888}
   - component: {fileID: 50789041150386994}
+  - component: {fileID: 114729285720964310}
   m_Layer: 0
   m_Name: magnet
   m_TagString: item
@@ -37,7 +37,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1962496680769470}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -11.22, y: -8.188, z: -0.31892583}
+  m_LocalPosition: {x: 8.1315975, y: -25.485523, z: -0.63785166}
   m_LocalScale: {x: 1.4668021, y: 1.7702563, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -63,8 +63,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!60 &60506918656935234
-PolygonCollider2D:
+--- !u!58 &58784964436287888
+CircleCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -75,29 +75,9 @@ PolygonCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.21, y: 0.83}
-    newSize: {x: 1.21, y: 0.83}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: -0.235, y: -0.044999998}
-      - {x: -0.225, y: -0.105}
-      - {x: -0.225, y: -0.145}
-      - {x: -0.16499999, y: -0.205}
-      - {x: -0.055, y: -0.205}
-      - {x: 0.195, y: -0.055}
-      - {x: 0.195, y: 0.085}
-      - {x: 0.185, y: 0.13499999}
-      - {x: -0.074999996, y: 0.275}
-      - {x: -0.145, y: 0.275}
-      - {x: -0.235, y: 0.225}
+  m_Offset: {x: -0.04, y: 0.02}
+  serializedVersion: 2
+  m_Radius: 0.2
 --- !u!114 &114729285720964310
 MonoBehaviour:
   m_ObjectHideFlags: 1

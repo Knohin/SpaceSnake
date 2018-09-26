@@ -8,7 +8,7 @@ public class Laser : MonoBehaviour {
     {
         if (collision.tag == "meteo")
         {
-            collision.GetComponent<CrushMeteo>().Crush();
+            collision.GetComponent<CrushMeteo>().Crush(4);
         }
     }
 }

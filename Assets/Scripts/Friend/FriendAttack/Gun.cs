@@ -16,8 +16,7 @@ public class Gun : MonoBehaviour
     Vector3[] bulletsDirection;
 
     FriendMover friendMover;
-    Transform parent;
-    AudioSource audio;
+    new AudioSource audio;
     float elapsedTime;
 
     private void Awake()
@@ -36,7 +35,6 @@ public class Gun : MonoBehaviour
         }
 
         friendMover = GetComponentInParent<FriendMover>();
-        parent = transform.parent;
 
         audio = GetComponent<AudioSource>();
 

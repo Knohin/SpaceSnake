@@ -11,19 +11,24 @@ public class BombThrower : MonoBehaviour {
     public float ThrowPower;
 
     private SpikeBomb spikeBomb;   // instance
-    private FriendMover friendMover;
 
-    AudioSource audio;
+    const int MaxNumOfSpikeBomb = 4;
+
+    FriendMover friendMover;
+    new AudioSource audio;
 
     private float elaspedTime;
 
     private void Awake()
     {
-        friendMover = GetComponentInParent<FriendMover>();
-        spikeBomb = Instantiate(SpikeBombPrefab).GetComponent<SpikeBomb>();
-        spikeBomb.transform.parent = transform;
-        spikeBomb.gameObject.SetActive(false);
+        for (int i = 0; i < MaxNumOfSpikeBomb; ++i)
+        {
+            spikeBomb = Instantiate(SpikeBombPrefab).GetComponent<SpikeBomb>();
+            spikeBomb.transform.parent = transform;
+            spikeBomb.gameObject.SetActive(false);
+        }
 
+        friendMover = GetComponentInParent<FriendMover>();
         audio = GetComponent<AudioSource>();
     }
     private void OnEnable()
@@ -40,22 +45,17 @@ public class BombThrower : MonoBehaviour {
 
         if( AttackDelay <= elaspedTime )
         {
-            elaspedTime -= AttackDelay;
+            if (transform.childCount == 0)
+                return;
 
-            if (!spikeBomb.isActiveAndEnabled)
-            {
-                ThrowObject();
-                audio.PlayDelayed(1.0f);
-            }
+            Vector2 dir = (Vector2)transform.position - friendMover.CircleCenter;
+            dir.Normalize();
+
+            spikeBomb.gameObject.SetActive(true);
+            spikeBomb.Ignite(dir * ThrowPower, BombTimer);
+
+            audio.PlayDelayed(1.0f);
+            elaspedTime = 0.0f;
         }
-    }
-
-    void ThrowObject()
-    { 
-        Vector2 dir = (Vector2)transform.position - friendMover.CircleCenter;
-        dir.Normalize();
-        
-        spikeBomb.gameObject.SetActive(true);
-        spikeBomb.Ignite(dir * ThrowPower, BombTimer);
     }
 }

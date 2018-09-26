@@ -25,9 +25,7 @@ public class LaserGun : MonoBehaviour
     }
 
     FriendMover friendMover;
-    AudioSource audio;
-
-    Transform parent;
+    new AudioSource audio;
 
     float elapsedTime;
 
@@ -47,7 +45,6 @@ public class LaserGun : MonoBehaviour
         }
 
         friendMover = GetComponentInParent<FriendMover>();
-        parent = transform.parent;
         audio = GetComponent<AudioSource>();
 
         elapsedTime = .0f;

@@ -24,7 +24,7 @@ public class CrushMeteo : MonoBehaviour {
         //}
     }
 
-    public void Crush()
+    public void Crush(int damage = 1)
     {
         MainObject meteo = newMeteo.FindMeteo(gameObject);
         if (meteo == null)
@@ -32,7 +32,7 @@ public class CrushMeteo : MonoBehaviour {
 
         ScoringManager.meteo_Score += 50;
         /// health 줄이고
-        meteo.health--;
+        meteo.health -= damage;
 
         /// 0 이면
         if (meteo.health < 1)

@@ -3,12 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CrushItem : MonoBehaviour {
-
-    //private FriendsManager friendsManager;
-    
-    void Start () {
-        //friendsManager = GameObject.Find("GameManager").GetComponent<FriendsManager>();
-    }
     
     void OnTriggerEnter2D(Collider2D other)
     {

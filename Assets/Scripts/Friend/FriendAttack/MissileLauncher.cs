@@ -10,18 +10,21 @@ public class MissileLauncher : MonoBehaviour {
     public float MissileDegreeDelta;
     public float ShotDelay;
 
-    GameObject missile;
+    const float MaxNumOfMissile = 3;
 
     FriendMover friendMover;
-    AudioSource audio;
+    new AudioSource audio;
 
     float elapsedTime;
 
     private void Awake()
     {
-        missile = Instantiate(MissilePrefab);
-        missile.SetActive(false);
-        missile.transform.parent = transform;
+        for (int i = 0; i < MaxNumOfMissile; ++i)
+        {
+            GameObject missile = Instantiate(MissilePrefab);
+            missile.transform.parent = transform;
+            missile.SetActive(false);
+        }
 
         friendMover = GetComponentInParent<FriendMover>();
         audio = GetComponent<AudioSource>();
@@ -34,27 +37,26 @@ public class MissileLauncher : MonoBehaviour {
         if (friendMover.state != FriendMover.eState.Moving)
             return;
 
+        elapsedTime += Time.deltaTime;
+
         if (ShotDelay <= elapsedTime)
         {
-            StartCoroutine(Launch());
+            // Check the pool is Empty
+            if (transform.childCount == 0)
+                return;
+
+            GameObject missile = transform.GetChild(0).gameObject;
+
+            // Initiate the missile
+            missile.transform.position = transform.position;
+            missile.GetComponent<HomingMissile>().Speed = MissileSpeed;
+            missile.GetComponent<HomingMissile>().MaxDegreeDelta = MissileDegreeDelta;
+            // Active the missile
+            missile.SetActive(true);
+
             audio.Play();
+
             elapsedTime = .0f;
         }
-
-        if (missile.activeSelf == false)
-            elapsedTime += Time.deltaTime;
     }
-
-    IEnumerator Launch()
-    {
-        // Initiate the missile
-        missile.transform.position = transform.position;
-        missile.GetComponent<HomingMissile>().Speed = MissileSpeed;
-        missile.GetComponent<HomingMissile>().MaxDegreeDelta = MissileDegreeDelta;
-        // Active the missile
-        missile.SetActive(true);
-
-        yield return null;
-    }
-
 }

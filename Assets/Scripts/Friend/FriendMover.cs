@@ -133,7 +133,7 @@ public class FriendMover : MonoBehaviour
             {
                 friendsManager.AttachFriend(cfm);
             }
-            else if (4 < cfm.indexFromHead)
+            else if (6 < cfm.indexFromHead)
             {
                 friendsManager.AttackedAt(cfm);
                 //collision.GetComponent<FriendMover>().Die();

@@ -8,7 +8,7 @@ public class Barrier : MonoBehaviour
     public float BarrierRadius;
 
     SpriteRenderer barrierImage;
-    AudioSource audio;
+    new AudioSource audio;
 
     FriendMover friendMover;
 
@@ -38,18 +38,18 @@ public class Barrier : MonoBehaviour
     private void Update()
     {
         if (friendMover.state != FriendMover.eState.Moving)
+        {
+            barrierImage.enabled = false;
+            isTurnedOn = false;
+
             return;
+        }
 
         if (isTurnedOn)
         {
             MainObject nearestMeteo = newMeteo.FindNearestMeteo(transform.position, BarrierRadius);
-            //if (nearestMeteo == null)
-            //    return;
-
-            // float nearestDistanceSqr = (transform.position - nearestMeteo.ballPos).sqrMagnitude;
 
             if (nearestMeteo != null)
-            //if (nearestDistanceSqr <= BarrierRadius * BarrierRadius)
             {
                 nearestMeteo.stone.GetComponent<CrushMeteo>().Crush();
 

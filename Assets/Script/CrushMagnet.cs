@@ -16,7 +16,7 @@ public class CrushMagnet : MonoBehaviour
     void Start()
     {
         rd = GetComponent<SpriteRenderer>();
-        co = GetComponent<PolygonCollider2D>();
+        co = GetComponent<CircleCollider2D>();
 
         Black_Hole.SetActive(false);
         active_Hole = false;

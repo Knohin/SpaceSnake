@@ -52,7 +52,7 @@ public class SpikeBomb : MonoBehaviour {
             distanceSqr = (meteo.ballPos - transform.position).sqrMagnitude;
             if(distanceSqr <= ExplosionRadius*ExplosionRadius)
             {
-                meteo.stone.GetComponent<CrushMeteo>().Crush();
+                meteo.stone.GetComponent<CrushMeteo>().Crush(4);
             }
         }
 

@@ -94,8 +94,8 @@ public class FriendsManager : MonoBehaviour
         {
             if (MovingFriends[i].state == FriendMover.eState.Dead)
             {
-                MovingFriends.RemoveAt(i);
                 InActiveFriends.Add(MovingFriends[i]);
+                MovingFriends.RemoveAt(i);
             }
         }
 
@@ -215,7 +215,6 @@ public class FriendsManager : MonoBehaviour
             for (int i = idx; 0 <= i; --i)
             {
                 MovingFriends[i].Die();
-                //StartCoroutine(WaitForDying(MovingFriends[i]));
             }
             for (int i = idx + 1; i < MovingFriends.Count; ++i)
                 MovingFriends[i].Flicker(2.0f);

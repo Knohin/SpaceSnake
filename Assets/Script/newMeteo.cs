@@ -17,7 +17,6 @@ public class newMeteo : MonoBehaviour {
     public bool level3Active;
     public GameObject level3;
 
-    public GameObject Portal;
     public GameObject Hole;
 
     public static bool active_Hole;
@@ -49,7 +48,6 @@ public class newMeteo : MonoBehaviour {
         meteoList = new List<MainObject>(); // active meteors
         period = 2.0f;
 
-        Portal.gameObject.SetActive(false);
         Hole.gameObject.SetActive(false);
         active_Hole = false;
 
